@@ -5,15 +5,17 @@
  */
 package ps3preservation.data;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
 /**
  *
- * @author Marin
+ * @author Marin Andros, Paolo Stojic, Roberto Anic Banic, Matea Cvijanovic, Donat Avdijaj
  */
 public class Licenses extends GenericDataClass{
+      
     
     private int id; //not null
     private String name; //not null
@@ -22,6 +24,13 @@ public class Licenses extends GenericDataClass{
     private static final String[] attributeNames = {"id", "name", "data", "user_id"};
     private ArrayList<String> attributeList;
 
+    /**
+     * Constructor with parameters
+     * @param id value for id
+     * @param name value for name of the licenses
+     * @param data byte array of data
+     * @param user_id  int value for the user_id
+     */
     public Licenses(int id, String name, byte[] data, int user_id) {
         this.id = id;
         this.name = name;
@@ -30,15 +39,18 @@ public class Licenses extends GenericDataClass{
         populateAttributeList();
     }
     
-    public void populateAttributeList(){
+    /**
+     * Method that goes through all the get methods for our attributes and populates an attributeList Arraylist with data
+     */
+    public void populateAttributeList(){ 
         attributeList = new ArrayList<>();
         attributeList.add(""+getId());
         attributeList.add(getName());
         attributeList.add(Arrays.toString(getData()));
         attributeList.add(""+getUser_id());
     }
-    
-     @Override
+     
+    @Override
     public void setAllTheAttributes(ArrayList<ArrayList<String>> array) {
         try{
             for(int i=1; i<=array.get(0).size(); i++){
@@ -47,7 +59,7 @@ public class Licenses extends GenericDataClass{
                         setName(array.get(0).get(i));
                         break;
                     case 2:
-                        setData(array.get(0).get(i).getBytes());
+                        setData(array.get(0).get(i).getBytes(Charset.forName("UTF-8")));
                         break;
                     case 3:
                         setUser_id(Integer.getInteger(array.get(0).get(i)));
@@ -72,7 +84,7 @@ public class Licenses extends GenericDataClass{
     public String getPrimaryKeyName() {
         return "id";
     }
-
+    
     @Override
     public String getPrimaryKeyValue() {
         return "" + getId();
@@ -113,6 +125,5 @@ public class Licenses extends GenericDataClass{
 
     public void setUser_id(int user_id) {
         this.user_id = user_id;
-    } 
-
+    }  
 }

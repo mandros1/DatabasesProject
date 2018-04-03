@@ -22,7 +22,16 @@ public class Files extends GenericDataClass{
     private int size; //not null
     private static final String[] attributeNames = {"id", "file_id", "hash", "sector_offset", "size"};
     private ArrayList<String> attributeList;
-
+    
+    
+    /**
+     *  Constructor with parameters that sets all the values of our variables
+     * @param id int value for id
+     * @param file_id String value for id
+     * @param hash byte array of the hash
+     * @param sector_offset int value of the offset
+     * @param size int value of the file size
+     */
     public Files(int id, String file_id, byte[] hash, int sector_offset, int size) {
         this.id = id;
         this.file_id = file_id;
@@ -32,6 +41,13 @@ public class Files extends GenericDataClass{
         populateAttributeList();
     }
     
+    /**
+     *  Constructor with parameters that sets all the values of our variables except the offset which is allowed to be null
+     * @param id int value for id
+     * @param file_id String value for id
+     * @param hash byte array of the hash 
+     * @param size int value of the file size
+     */
     public Files(int id, String file_id, byte[] hash, int size) {
         this.id = id;
         this.file_id = file_id;
@@ -42,7 +58,7 @@ public class Files extends GenericDataClass{
     
     
     /**
-     * 
+     * Method that goes through all the get methods for our attributes and populates an attributeList Arraylist with data
      */
     public void populateAttributeList(){
         attributeList = new ArrayList<>();
@@ -57,22 +73,7 @@ public class Files extends GenericDataClass{
     public String getTableName() {
         return "files";
     }
-     
-    
-    /**
-     * 
-     * @param val
-     * @return 
-     */
-    public byte[] stringToByte(String val){
-        byte[] b = val.getBytes(Charset.forName("UTF-8"));
-        return b;
-    }
-    
-    /**
-     * 
-     * @param array 
-     */
+       
     @Override
     public void setAllTheAttributes(ArrayList<ArrayList<String>> array) {
         try{
@@ -82,7 +83,7 @@ public class Files extends GenericDataClass{
                         setFile_id(array.get(0).get(i));
                         break;
                     case 2:
-                        setHash(stringToByte(array.get(0).get(i)));
+                        setHash((array.get(0).get(i)).getBytes(Charset.forName("UTF-8")));
                         break;
                     case 3:
                         setSector_offset(Integer.getInteger(array.get(0).get(i)));
@@ -154,6 +155,5 @@ public class Files extends GenericDataClass{
 
     public int getSize() {
         return size;
-    } 
- 
+    }  
 }
