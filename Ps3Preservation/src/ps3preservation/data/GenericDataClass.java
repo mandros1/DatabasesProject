@@ -5,8 +5,8 @@
  */
 package ps3preservation.data;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap; 
 import ps3preservation.Ps3SQLDatabase;
 
 /**
@@ -16,12 +16,14 @@ import ps3preservation.Ps3SQLDatabase;
 public abstract class GenericDataClass {
 
     private ArrayList<ArrayList<String>> data;
+    private HashMap<String, String> values;
+    private String query;
 
     public void fetch(Ps3SQLDatabase database) {
-        String query = String.format("SELECT * FROM %s WHERE %s= '%s';", getTableName(), getPrimaryKeyName(), getPrimaryKeyValue());
+        query = String.format("SELECT * FROM %s WHERE %s= '%s';", getTableName(), getPrimaryKeyName(), getPrimaryKeyValue());
         data = database.getData(query);
         if (!data.isEmpty()) {
-            setAllValues(data);
+            setAllTheAttributes(data);
         }
     }
     
@@ -29,9 +31,16 @@ public abstract class GenericDataClass {
         if(existCheckUp(database)){
             System.out.println("Cannot execute put() UPDATE: -Data with " + getPrimaryKeyName() + " primay key and its value of '" + getPrimaryKeyValue()+ "' for PRIMARY key already exist in the database.");
         }else{
-            result = mySQL.setData(String.format("UPDATE equipment SET EquipmentName = '%s', EquipmentDescription = '%s', "
-                    + "EquipmentCapacity = %s WHERE EquipID = %s;",
-                    getEquipmentName(), getEqipmentDescription(), getEquipmentCapacity(), getEquipmentID()));
+            query = String.format("UPDATE %s SET", getTableName());
+            values = getAllTheAttributes();
+            
+            values.entrySet().forEach((entry) -> {
+                query += " " + entry.getKey() + " = '" + entry.getValue() + "',";
+            });
+            query = query.substring(0, query.length()-1); // to delete the last comma ","
+            query += " WHERE " + getPrimaryKeyName() + " = " + getPrimaryKeyValue() + ";";
+            
+            boolean result = database.setData(query);
             if (result) {
                 System.out.println("Table update was executed successfully!");
             }
@@ -39,14 +48,17 @@ public abstract class GenericDataClass {
     } 
     
     public boolean existCheckUp(Ps3SQLDatabase database){
-        String query = String.format("SELECT * FROM %s WHERE %s= '%s';", getTableName(), getPrimaryKeyName(), getPrimaryKeyValue());
+        query = String.format("SELECT * FROM %s WHERE %s= '%s';", getTableName(), getPrimaryKeyName(), getPrimaryKeyValue());
         data = database.getData(query);
         return data.isEmpty();
     }
 
+     
     public abstract String getTableName();
 
-    public abstract void setAllValues(ArrayList<ArrayList<String>> array);
+    public abstract HashMap<String, String> getAllTheAttributes();
+    
+    public abstract void setAllTheAttributes(ArrayList<ArrayList<String>> array);
 
     public abstract String getPrimaryKeyName();
 

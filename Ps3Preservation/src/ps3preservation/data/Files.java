@@ -7,6 +7,8 @@ package ps3preservation.data;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  *
@@ -18,6 +20,8 @@ public class Files extends GenericDataClass{
     private byte[] hash; //not null
     private int sector_offset; //default null
     private int size; //not null
+    private static final String[] attributeNames = {"id", "file_id", "hash", "sector_offset", "size"};
+    private ArrayList<String> attributeList;
 
     public Files(int id, String file_id, byte[] hash, int sector_offset, int size) {
         this.id = id;
@@ -25,6 +29,7 @@ public class Files extends GenericDataClass{
         this.hash = hash;
         this.sector_offset = sector_offset;
         this.size = size;
+        populateAttributeList();
     }
     
     public Files(int id, String file_id, byte[] hash, int size) {
@@ -32,6 +37,19 @@ public class Files extends GenericDataClass{
         this.file_id = file_id;
         this.hash = hash; 
         this.size = size;
+        populateAttributeList();
+    }
+    
+    
+    /**
+     * 
+     */
+    public void populateAttributeList(){
+        attributeList = new ArrayList<>();
+        attributeList.add(""+getId());
+        attributeList.add(getFile_id());
+        attributeList.add(Arrays.toString(getHash()));
+        attributeList.add(""+getSize());
     }
 
     
@@ -56,7 +74,7 @@ public class Files extends GenericDataClass{
      * @param array 
      */
     @Override
-    public void setAllValues(ArrayList<ArrayList<String>> array) {
+    public void setAllTheAttributes(ArrayList<ArrayList<String>> array) {
         try{
             for(int i=1; i<=array.get(0).size(); i++){
                 switch(i){
@@ -78,7 +96,16 @@ public class Files extends GenericDataClass{
             npe.printStackTrace(); 
         }
     }
-
+    
+    @Override
+    public HashMap<String, String> getAllTheAttributes() {
+        HashMap<String, String> map = new HashMap<>();
+        for(int i=0; i<attributeNames.length; i++){
+            map.put(attributeNames[i], attributeList.get(i));
+        }
+        return map;
+    }
+  
     @Override
     public String getPrimaryKeyName() {
         return "id";
@@ -128,6 +155,5 @@ public class Files extends GenericDataClass{
     public int getSize() {
         return size;
     } 
-
-   
+ 
 }
