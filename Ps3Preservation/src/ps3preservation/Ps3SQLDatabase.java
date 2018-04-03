@@ -58,7 +58,22 @@ public class Ps3SQLDatabase {
         this.username = username;
         this.password = password;
     }
+ public static void main(String[] args) {
+        Ps3SQLDatabase db = new Ps3SQLDatabase("jdbc", "mysql", "localhost", "3306", "jure?useSSL=false", "root", "456321");
 
+        if (db.connect()) {
+            System.out.println("Connected succefully");
+        }
+//        ArrayList<String> jure = new ArrayList<>();
+//        jure.add("" + 9);
+//        ArrayList<ArrayList<String>> result = db.getData("select * from users where id = ?", jure);
+//        for (int i = 1; i < 100; i++) {
+//            db.setData("insert into users values(" + i + ",1123,2)");
+//        }
+//        System.out.println(result.size());
+//        db.close();
+//        System.out.println("Done");
+    }
     /**
      *
      * @return
@@ -80,6 +95,7 @@ public class Ps3SQLDatabase {
                 System.err.println("Connecting to the database failed, timeout provided to isValid method is lower than 0.");
             }
         } catch (SQLException sql) {
+            System.err.println(sql.getMessage());
             System.err.println("Connecting to the database failed, unable to connect to the database.");
         }
         return false;
