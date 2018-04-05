@@ -72,7 +72,7 @@ public class Licenses extends GenericDataClass{
     }
     
     @Override
-    public HashMap<String, String> getAllTheAttributes() {
+    public HashMap<String, String> createAttributeMap() {
         HashMap<String, String> map = new HashMap<>();
         for(int i=0; i<attributeNames.length; i++){
             map.put(attributeNames[i], attributeList.get(i));
@@ -81,17 +81,17 @@ public class Licenses extends GenericDataClass{
     }
   
     @Override
-    public String getPrimaryKeyName() {
+    public String primaryKeyNameGetter() {
         return "id";
     }
     
     @Override
-    public String getPrimaryKeyValue() {
+    public String primaryKeyValueGetter() {
         return "" + getId();
     }
     
     @Override
-    public String getTableName() {
+    public String tableNameGetter() {
         return "licenses";
     }
 
@@ -126,4 +126,19 @@ public class Licenses extends GenericDataClass{
     public void setUser_id(int user_id) {
         this.user_id = user_id;
     }  
+
+    @Override
+    public ArrayList<String> attributeListGetter() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setAttributeList(ArrayList<String> arrList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String[] attributeNamesGetter() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

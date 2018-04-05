@@ -5,9 +5,14 @@
  */
 package ps3preservation.data;
 
-import java.util.ArrayList;
+import java.beans.IntrospectionException;
+import java.util.ArrayList; 
 import java.util.HashMap; 
 import ps3preservation.Ps3SQLDatabase;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 /**
  *
@@ -24,7 +29,7 @@ public abstract class GenericDataClass {
      * @param database Ps3SQLDatabase object
      */
     public void fetch(Ps3SQLDatabase database) {
-        query = String.format("SELECT * FROM %s WHERE %s= '%s';", getTableName(), getPrimaryKeyName(), getPrimaryKeyValue());
+        query = String.format("SELECT * FROM %s WHERE %s= '%s';", tableNameGetter(), primaryKeyNameGetter(), primaryKeyValueGetter());
         data = database.getData(query);
         if (!data.isEmpty()) {
             setAllTheAttributes(data);
@@ -37,16 +42,16 @@ public abstract class GenericDataClass {
      */
     public void put(Ps3SQLDatabase database) {
         if(existCheckUp(database)){
-            System.out.println("Cannot execute put() UPDATE: -Data with " + getPrimaryKeyName() + " primay key and its value of '" + getPrimaryKeyValue()+ "' for PRIMARY key already exist in the database.");
+            System.out.println("Cannot execute put() UPDATE: -Data with " + primaryKeyNameGetter() + " primay key and its value of '" + primaryKeyValueGetter()+ "' for PRIMARY key already exist in the database.");
         }else{
-            query = String.format("UPDATE %s SET", getTableName());
-            values = getAllTheAttributes();
+            query = String.format("UPDATE %s SET", tableNameGetter());
+            values = createAttributeMap();
             
             values.entrySet().forEach((entry) -> {
                 query += " " + entry.getKey() + " = '" + entry.getValue() + "',";
             });
             query = query.substring(0, query.length()-1); // to delete the last comma ","
-            query += " WHERE " + getPrimaryKeyName() + " = " + getPrimaryKeyValue() + ";";
+            query += " WHERE " + primaryKeyNameGetter() + " = " + primaryKeyValueGetter() + ";";
             
             boolean result = database.setData(query);
             if (result) {
@@ -61,24 +66,82 @@ public abstract class GenericDataClass {
      * @return true if there there is no data for the specified key, false if there is data
      */
     public boolean existCheckUp(Ps3SQLDatabase database){
-        query = String.format("SELECT * FROM %s WHERE %s= '%s';", getTableName(), getPrimaryKeyName(), getPrimaryKeyValue());
+        query = String.format("SELECT * FROM %s WHERE %s= '%s';", tableNameGetter(), primaryKeyNameGetter(), primaryKeyValueGetter());
         data = database.getData(query);
         return data.isEmpty();
     }
-
+    
+    /**
+     * 
+     */
+    public void populateAttributeList(){
+        ArrayList<String> attributeList = new ArrayList<>();
+        try{
+            for(PropertyDescriptor propertyDescriptor : 
+            Introspector.getBeanInfo(this.getClass()).getPropertyDescriptors()){ 
+                if( propertyDescriptor.getReadMethod() != null && !propertyDescriptor.getName().equals("class")){ 
+                    System.out.println(propertyDescriptor.getReadMethod());
+                    Object obj = propertyDescriptor.getReadMethod().invoke(this);
+                    if( obj instanceof Integer ){
+                        System.out.println("int: ->" + propertyDescriptor.getReadMethod());
+                        attributeList.add(Integer.toString((Integer)obj));
+                    }else if( obj instanceof Double ){
+                        System.out.println("double: ->" + propertyDescriptor.getReadMethod());
+                        attributeList.add(Double.toString((Double)obj));
+                    }else if( obj instanceof byte[] ){
+                        System.out.println("byte[]: ->" + propertyDescriptor.getReadMethod());
+                        attributeList.add(Arrays.toString((byte[])obj));
+                    } else {
+                        attributeList.add((String)obj);
+                        System.out.println("String: ->" + propertyDescriptor.getReadMethod());
+                    }
+                } 
+            }
+            setAttributeList(attributeList);
+        } catch(IntrospectionException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e){
+                e.printStackTrace();
+                // TODO: IMPLEMENT PROPER EXCEPTION CATCHING
+        } 
+    }
+        
+        
+    /**
+     * Generates all the attributes names and values of every class and stores them in the HashMap<NAME, VALUE>
+     * @return HashMap with the attribute names and values
+     */
+    public HashMap<String, String> createAttributeMap() {
+        String [] attributeNames = attributeNamesGetter();
+        ArrayList<String> attributeList = attributeListGetter();
+        HashMap<String, String> map = new HashMap<>();
+        for(int i=0; i<attributeNames.length; i++){
+            map.put(attributeNames[i], attributeList.get(i));
+        }
+        return map;
+    }
+        
+    /**
+     * 
+     * @return 
+     */
+    public abstract ArrayList<String> attributeListGetter();
+    
+    /**
+     * 
+     */
+    public abstract void setAttributeList(ArrayList<String> arrList);
+    
+    /**
+     * 
+     * @return 
+     */
+    public abstract String[] attributeNamesGetter();
     
     /**
      * gets the table name for each module
      * @return String value of the table name
      */
-    public abstract String getTableName();
-
-    /**
-     * Generates all the attributes names and values of every class and stores them in the HashMap<NAME, VALUE>
-     * @return HashMap with the attribute names and values
-     */
-    public abstract HashMap<String, String> getAllTheAttributes();
-    
+    public abstract String tableNameGetter();
+ 
     
     /**
      * Uses setters of the specific subclass and setting attributes to the values that were fetched from the database
@@ -91,11 +154,11 @@ public abstract class GenericDataClass {
      * Gets the name of the primary key attribute
      * @return String of the primary key name attribute
      */
-    public abstract String getPrimaryKeyName();
+    public abstract String primaryKeyNameGetter();
 
     /**
      * Gets the value of the primary key attribute
      * @return String of the primary key value attribute
      */
-    public abstract String getPrimaryKeyValue();
+    public abstract String primaryKeyValueGetter();
 } 

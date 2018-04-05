@@ -35,9 +35,14 @@ public class PackageFileXref extends GenericDataClass {
         attributeList.add("" + getPackage_id());
         attributeList.add("" + getFile_id());
     }
-
+    
+    
+    public String convertToString(){
+        
+    }
+    
     @Override
-    public String getTableName() {
+    public String tableNameGetter() {
         return "package_file_xref";
     }
 
@@ -60,21 +65,21 @@ public class PackageFileXref extends GenericDataClass {
     }
 
     @Override
-    public HashMap<String, String> getAllTheAttributes() {
+    public HashMap<String, String> createAttributeMap() {
         HashMap<String, String> map = new HashMap<>();
         for (int i = 0; i < attributeNames.length; i++) {
             map.put(attributeNames[i], attributeList.get(i));
         }
         return map;
     }
-
+    
     @Override
-    public String getPrimaryKeyName() {
+    public String primaryKeyNameGetter() {
         return "id";
     }
 
     @Override
-    public String getPrimaryKeyValue() {
+    public String primaryKeyValueGetter() {
         return "" + getId();
     }
 
@@ -100,5 +105,20 @@ public class PackageFileXref extends GenericDataClass {
 
     public int getFile_id() {
         return file_id;
+    } 
+
+    @Override
+    public ArrayList<String> attributeListGetter() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setAttributeList(ArrayList<String> arrList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String[] attributeNamesGetter() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -35,7 +35,7 @@ public class PackageLicenseXref extends GenericDataClass {
     }
 
     @Override
-    public String getTableName() {
+    public String tableNameGetter() {
         return "package_file_xref";
     }
 
@@ -58,7 +58,7 @@ public class PackageLicenseXref extends GenericDataClass {
     }
 
     @Override
-    public HashMap<String, String> getAllTheAttributes() {
+    public HashMap<String, String> createAttributeMap() {
         HashMap<String, String> map = new HashMap<>();
         for (int i = 0; i < attributeNames.length; i++) {
             map.put(attributeNames[i], attributeList.get(i));
@@ -67,12 +67,12 @@ public class PackageLicenseXref extends GenericDataClass {
     }
 
     @Override
-    public String getPrimaryKeyName() {
+    public String primaryKeyNameGetter() {
         return "package_id";
     }
 
     @Override
-    public String getPrimaryKeyValue() {
+    public String primaryKeyValueGetter() {
         return "" + getPackage_id();
     }
 
@@ -90,6 +90,21 @@ public class PackageLicenseXref extends GenericDataClass {
 
     public int getLicense_id() {
         return license_id;
+    }
+
+    @Override
+    public ArrayList<String> attributeListGetter() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setAttributeList(ArrayList<String> arrList) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public String[] attributeNamesGetter() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

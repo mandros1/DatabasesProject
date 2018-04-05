@@ -1,14 +1,15 @@
-/*
+ /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 package ps3preservation.data;
 
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Arrays; 
 
 /**
  *
@@ -23,6 +24,17 @@ public class Files extends GenericDataClass{
     private static final String[] attributeNames = {"id", "file_id", "hash", "sector_offset", "size"};
     private ArrayList<String> attributeList;
     
+    
+    public static void main(String[] args){
+        Files ff = new Files(3, "123", "342".getBytes(), 3);
+        byte [] jozo = "342".getBytes();
+        System.out.println(Arrays.toString(jozo));
+        ff.populateAttributeList();
+        ArrayList<String> arr = ff.attributeListGetter(); 
+        for(String s: arr){
+            System.err.println(s);
+        }
+    }
     
     /**
      *  Constructor with parameters that sets all the values of our variables
@@ -67,10 +79,27 @@ public class Files extends GenericDataClass{
         attributeList.add(Arrays.toString(getHash()));
         attributeList.add(""+getSize());
     }
+    
+    
+
+    @Override
+    public ArrayList<String> attributeListGetter() {
+        return attributeList;
+    }
+
+    @Override
+    public void setAttributeList(ArrayList<String> arrList) {
+        attributeList = arrList;
+    }
+
+    @Override
+    public String[] attributeNamesGetter() {
+        return attributeNames;
+    }
 
     
      @Override
-    public String getTableName() {
+    public String tableNameGetter() {
         return "files";
     }
        
@@ -97,23 +126,14 @@ public class Files extends GenericDataClass{
             npe.printStackTrace(); 
         }
     }
-    
+     
     @Override
-    public HashMap<String, String> getAllTheAttributes() {
-        HashMap<String, String> map = new HashMap<>();
-        for(int i=0; i<attributeNames.length; i++){
-            map.put(attributeNames[i], attributeList.get(i));
-        }
-        return map;
-    }
-  
-    @Override
-    public String getPrimaryKeyName() {
+    public String primaryKeyNameGetter() {
         return "id";
     }
 
     @Override
-    public String getPrimaryKeyValue() {
+    public String primaryKeyValueGetter() {
         return "" + getId();
     }
     

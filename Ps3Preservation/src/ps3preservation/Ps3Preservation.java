@@ -57,7 +57,16 @@ public class Ps3Preservation {
                 System.out.print(usersUpdated.get(i).get(j) + "\t");
             }
         }
-
+        db.setData("delete from users where id='3';");
+        System.out.println(db.getData("select * from users where id='3';"));
+        ArrayList<ArrayList<String>> das = db.getData("select * from users");
+        System.out.println("\n\nUsers updated:");
+        for (int i = 0; i < das.size(); i++) {
+            System.out.println("\nUser#"+(i+1));
+            for (int j = 0; j < das.get(i).size(); j++) {
+                System.out.print(das.get(i).get(j) + "\t");
+            }
+        }
     }
 }
 
