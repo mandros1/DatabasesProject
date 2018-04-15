@@ -60,7 +60,7 @@ public class Users {
     }
     public boolean checkAvailability(){
         ArrayList<ArrayList<String>> result = db.getData("select id from users where username = '"+username+"'");
-        if(result.size() == 0){
+        if(result.isEmpty()){
             return true;
         }else{
             return false;

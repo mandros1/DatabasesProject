@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ps3preservation.data;
 
 import java.nio.charset.Charset;
@@ -10,7 +5,8 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Marin Andros, Paolo Stojic, Roberto Anic Banic, Matea Cvijanovic, Donat Avdijaj
+ * @author Marin Andros, Paolo Stojic, Roberto Anic Banic, Matea Cvijanovic,
+ * Donat Avdijaj
  */
 public class Licenses extends GenericDataClass {
 
@@ -38,27 +34,11 @@ public class Licenses extends GenericDataClass {
 
     @Override
     public void setAllTheAttributes(ArrayList<ArrayList<String>> array) {
-        try {
-            for (int i = 0; i <= array.get(0).size(); i++) {
-                switch (i) {
-                    case 0:
-                        setData((array.get(0).get(i)).getBytes(Charset.forName("UTF-8")));
-                        break;
-                    case 1:
-                        setId(Integer.parseInt((array.get(0).get(i))));
-                        break;
-                    case 3:
-                        setName((array.get(0).get(i)));
-                        break;
-                    case 4:
-                        setUser_id(Integer.parseInt((array.get(0).get(i))));
-                        break;
-                }
-            }
-        } catch (NullPointerException npe) {
-            //TODO: implement proper exception catching block   
-            npe.printStackTrace();
-        }
+        setData((array.get(0).get(0)).getBytes(Charset.forName("UTF-8")));
+        setId(Integer.parseInt((array.get(0).get(1))));
+        setName((array.get(0).get(3)));
+        setUser_id(Integer.parseInt((array.get(0).get(4))));
+
     }
 
     @Override
@@ -84,7 +64,7 @@ public class Licenses extends GenericDataClass {
     public int getId() {
         return id;
     }
-    
+
     public String getName() {
         return name;
     }

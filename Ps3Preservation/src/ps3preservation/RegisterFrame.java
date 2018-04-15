@@ -1,6 +1,7 @@
 package ps3preservation;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -72,6 +73,7 @@ public class RegisterFrame extends JFrame {
         createButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                feedbackLabel.setForeground(Color.RED);
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
                 String firstName = firstNameField.getText();
@@ -87,6 +89,7 @@ public class RegisterFrame extends JFrame {
                     Users user = new Users(db, username, password);
                     if (user.checkAvailability()) {
                         if (user.createUser()) {
+                            feedbackLabel.setForeground(Color.black);
                             feedbackLabel.setText("Account successfully created");
                             JButton loginButton = new JButton("Login");
                             loginButton.addActionListener(new ActionListener() {
@@ -96,10 +99,10 @@ public class RegisterFrame extends JFrame {
                                     loginFrame.setVisible(true);
                                 }
                             });
-                            buttonPanel.add(new JButton("Login"));
-                        } else {
-                            feedbackLabel.setText("Account creation unsuccessful");
+                            buttonPanel.add(loginButton);
                         }
+                    } else {
+                        feedbackLabel.setText("Account creation unsuccessful");
                     }
                 }
             }
@@ -129,6 +132,7 @@ public class RegisterFrame extends JFrame {
         add(buttonPanel, BorderLayout.CENTER);
         add(feedbackPanel, BorderLayout.SOUTH);
     }
+
     public void disposeWindow() {
         this.setVisible(false);
     }
