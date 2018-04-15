@@ -13,9 +13,21 @@ public class Users {
     private int id;
     private String username;
     private String password;
-    private String firstName;
-    private String lastName;
-    private String email;
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+    private String firstName = "";
+    private String lastName = "";
+    private String email = "";
 
     private Ps3SQLDatabase db;
 
@@ -23,6 +35,18 @@ public class Users {
         this.username = username;
         this.password = password;
         this.db = db;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Users(int id, String username, String password) {

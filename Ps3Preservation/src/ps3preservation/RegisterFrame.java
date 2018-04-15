@@ -41,7 +41,6 @@ public class RegisterFrame extends JFrame {
     public void initializeFrame() {
         addComponents();
         setTitle("Register");
-        addComponents();
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);

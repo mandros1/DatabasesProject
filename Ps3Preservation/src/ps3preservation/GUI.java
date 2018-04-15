@@ -46,7 +46,7 @@ public class GUI extends JFrame {
         contentPanel.add(new CenterPanel("GAME_NAME5", "placeholder.jpg"));
         contentPanel.add(new CenterPanel("GAME_NAME6", "placeholder.jpg"));
         
-        centerPanel.add(new NorthPanel(user.getUsername()), BorderLayout.NORTH);
+        centerPanel.add(new NorthPanel(user), BorderLayout.NORTH);
         centerPanel.add(contentPanel, BorderLayout.CENTER);
         
         mainPanel.add(centerPanel, BorderLayout.CENTER);
