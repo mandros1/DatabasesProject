@@ -4,15 +4,9 @@
  * and open the template in the editor.
  */
 package ps3preservation.data;
-
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.io.UnsupportedEncodingException;
+ 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList; 
 
 /**
  *
@@ -25,12 +19,42 @@ public class Files extends GenericDataClass {
     private byte[] hash; //not null
     private int sector_offset; //default null
     private int size; //not null
-    private static final String[] ATTRIBUTE_NAMES = {"id", "file_id", "hash", "sector_offset", "size"}; 
+    private static final String[] COLUMN_NAMES = { "file_id", "hash", "id", "sector_offset", "size"}; 
 
     public static void main(String[] args) {
 
         Files ff = new Files(3, "123", "342".getBytes(), 3);
-
+        ff.populateAttributeList();
+        ArrayList<String> attrList = ff.attributeListGetter();
+        String[] attNames = ff.attributeNamesGetter();
+        for(int i=0; i<attrList.size(); i++){
+            System.out.println(attNames[i] + ": " + attrList.get(i));
+        }
+        
+        System.out.println();
+        
+        Licenses lic = new Licenses(3, "newLicense", "344".getBytes(), 45);
+        attrList = lic.attributeListGetter(); 
+        attNames = lic.attributeNamesGetter(); 
+        for(int i=0; i<attrList.size(); i++){
+            System.out.println(attNames[i] + ": " + attrList.get(i));
+        }
+        
+        System.out.println();
+        PackageFileXref gg = new PackageFileXref(14, 155, 42);
+        attrList = gg.attributeListGetter(); 
+        attNames = gg.attributeNamesGetter(); 
+        for(int i=0; i<attrList.size(); i++){
+            System.out.println(attNames[i] + ": " + attrList.get(i));
+        }
+        
+        System.out.println();
+        PackageLicenseXref gg1 = new PackageLicenseXref();
+        attrList = gg1.attributeListGetter(); 
+        attNames = gg1.attributeNamesGetter(); 
+        for(int i=0; i<attrList.size(); i++){
+            System.out.println(attNames[i] + ": " + attrList.get(i));
+        }
     }
 
     /**
@@ -71,7 +95,7 @@ public class Files extends GenericDataClass {
 
     @Override 
     public String[] attributeNamesGetter() {
-        return ATTRIBUTE_NAMES;
+        return COLUMN_NAMES;
     }
 
     @Override
@@ -82,12 +106,12 @@ public class Files extends GenericDataClass {
     @Override
     public void setAllTheAttributes(ArrayList<ArrayList<String>> array) {
         try {
-            for (int i = 1; i <= array.get(0).size(); i++) {
+            for (int i = 0; i <= array.get(0).size(); i++) {
                 switch (i) {
-                    case 1:
+                    case 0:
                         setFile_id(array.get(0).get(i));
                         break;
-                    case 2:
+                    case 1:
                         setHash((array.get(0).get(i)).getBytes(Charset.forName("UTF-8")));
                         break;
                     case 3:

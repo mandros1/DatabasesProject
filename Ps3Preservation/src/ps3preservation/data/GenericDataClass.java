@@ -80,11 +80,11 @@ public abstract class GenericDataClass {
      */
     public void populateAttributeList(){
         attributeList = new ArrayList<>();
-        try{
+        try{ 
             // using PropertyDescriptor we call all the getters from the specified class and get their return values
             for(PropertyDescriptor propertyDescriptor : 
             Introspector.getBeanInfo(this.getClass()).getPropertyDescriptors()){ 
-                if( propertyDescriptor.getReadMethod() != null && !propertyDescriptor.getName().equals("class")){  
+                if( propertyDescriptor.getReadMethod() != null && !propertyDescriptor.getName().equals("class")){   
                     Object obj = propertyDescriptor.getReadMethod().invoke(this); // calls the getMethod (whichever) 
                     // depending on the return type it is casted to String and added to the ArrayList<String> attributeList 
                     if( obj instanceof Integer ){ 
