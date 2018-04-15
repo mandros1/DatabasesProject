@@ -15,13 +15,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -34,6 +37,8 @@ import ps3preservation.data.Users;
 public class GUI extends JFrame {
 
     private Users user;
+    private JTextField searchField;
+    private ArrayList<CenterPanel> contentArray;
 
     public GUI(String title, Users user) {
         super(title);
@@ -50,12 +55,14 @@ public class GUI extends JFrame {
         JPanel contentPanel = new JPanel();
 
         contentPanel.setLayout(new GridLayout(0, 2));
-        contentPanel.add(new CenterPanel("GAME_NAME", "placeholder.jpg"));
-        contentPanel.add(new CenterPanel("GAME_NAME2", "placeholder.jpg"));
-        contentPanel.add(new CenterPanel("GAME_NAME3", "placeholder.jpg"));
-        contentPanel.add(new CenterPanel("GAME_NAME4", "placeholder.jpg"));
-        contentPanel.add(new CenterPanel("GAME_NAME5", "placeholder.jpg"));
-        contentPanel.add(new CenterPanel("GAME_NAME6", "placeholder.jpg"));
+
+        contentArray = new ArrayList<CenterPanel>();
+        
+        for (int i = 0; i < 6; i++) {
+            CenterPanel panel = new CenterPanel("GAME_NAME" + (i + 1), "placeholder.jpg");
+            contentArray.add(panel);
+            contentPanel.add(panel);
+        }
 
         centerPanel.add(new NorthPanel(user), BorderLayout.NORTH);
         centerPanel.add(contentPanel, BorderLayout.CENTER);
@@ -137,8 +144,24 @@ public class GUI extends JFrame {
 
         public JPanel createSearchPanel() {
             JLabel searchLabel = new JLabel("Search: ");
+            searchLabel.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent e) {
+                    for (CenterPanel item : contentArray) {
+                        if(searchField.getText().equals(item.getContentLabel().getText())){
+//                            JOptionPane.showMessageDialog(null,item,"Search result",JOptionPane.PLAIN_MESSAGE);
+                            JFrame frame = new JFrame();
+                            frame.add(item);
+                            frame.pack();
+                            frame.setSize(450, 300);
+                            frame.setLocationRelativeTo(null);
+                            frame.setVisible(true);
+                        }
+                    }
+                }
+            });
+
             setImageToLabel(searchLabel, "src/media/search.png");
-            JTextField searchField = new JTextField(15);
+            searchField = new JTextField(15);
 
             JPanel searchPanel = new JPanel();
             searchPanel.add(searchLabel);
@@ -211,15 +234,18 @@ public class GUI extends JFrame {
 
     class CenterPanel extends JPanel {
 
+        JLabel contentLabel;
+
         public CenterPanel(String gameName, String img) {
             super();
             setLayout(new GridLayout(1, 2));
 
             JPanel contentPanel = new JPanel();
-            JLabel contentLabel = new JLabel(gameName);
+            contentLabel = new JLabel(gameName);
 
             contentPanel.setLayout(new GridLayout(2, 1));
 
+            JPanel areaPanel = new JPanel();
             JTextArea contentArea = new JTextArea(20, 20);
             contentArea.setLineWrap(true);
             contentArea.setWrapStyleWord(true);
@@ -227,7 +253,8 @@ public class GUI extends JFrame {
             contentArea.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad llamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
 
             contentPanel.add(contentLabel);
-            contentPanel.add(contentArea);
+            areaPanel.add(contentArea);
+            contentPanel.add(areaPanel);
 
             JPanel imgPanel = new JPanel();
             JLabel imgLabel = new JLabel();
@@ -240,6 +267,14 @@ public class GUI extends JFrame {
 
             add(imgPanel);
             add(contentPanel);
+        }
+
+        public JLabel getContentLabel() {
+            return contentLabel;
+        }
+
+        public void setContentLabel(JLabel contentLabel) {
+            this.contentLabel = contentLabel;
         }
 
         public void setImageToLabel(JLabel label, Image PicURL) {
