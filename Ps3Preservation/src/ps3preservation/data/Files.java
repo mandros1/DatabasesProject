@@ -48,13 +48,13 @@ public class Files extends GenericDataClass {
             System.out.println(attNames[i] + ": " + attrList.get(i));
         }
         
-        System.out.println();
-        PackageLicenseXref gg1 = new PackageLicenseXref();
-        attrList = gg1.attributeListGetter(); 
-        attNames = gg1.attributeNamesGetter(); 
-        for(int i=0; i<attrList.size(); i++){
-            System.out.println(attNames[i] + ": " + attrList.get(i));
-        }
+//        System.out.println();
+//        ReleasePackageXref gg1 = new ReleasePackageXref();
+//        attrList = gg1.attributeListGetter(); 
+//        attNames = gg1.attributeNamesGetter(); 
+//        for(int i=0; i<attrList.size(); i++){
+//            System.out.println(attNames[i] + ": " + attrList.get(i));
+//        }
     }
 
     /**
