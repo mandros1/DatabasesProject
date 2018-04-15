@@ -85,10 +85,12 @@ public abstract class GenericDataClass {
             for(PropertyDescriptor propertyDescriptor : 
             Introspector.getBeanInfo(this.getClass()).getPropertyDescriptors()){ 
                 if( propertyDescriptor.getReadMethod() != null && !propertyDescriptor.getName().equals("class")){   
-                    Object obj = propertyDescriptor.getReadMethod().invoke(this); // calls the getMethod (whichever) 
+                    Object obj = propertyDescriptor.getReadMethod().invoke(this); // calls the getMethod (whichever)  
                     // depending on the return type it is casted to String and added to the ArrayList<String> attributeList 
                     if( obj instanceof Integer ){ 
                         attributeList.add(Integer.toString((Integer)obj));
+                    }else if( obj instanceof Byte ){ 
+                        attributeList.add(""+obj);
                     }else if( obj instanceof Double ){ 
                         attributeList.add(Double.toString((Double)obj));
                     }else if( obj instanceof byte[] ){
