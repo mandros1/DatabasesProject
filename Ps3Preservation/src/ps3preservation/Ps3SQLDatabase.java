@@ -243,8 +243,9 @@ public class Ps3SQLDatabase {
     }
 
     /**
-     * The get data method that prepares a generic query provided to it, executes it and
-     * returns data from the database
+     * The get data method that prepares a generic query provided to it,
+     * executes it and returns data from the database
+     *
      * @param query The query that needs to be executed
      * @param parameters The query's parameters that need to be generated
      * @return The data returned from the database
@@ -270,6 +271,7 @@ public class Ps3SQLDatabase {
 
     /**
      * Method that executes a query that inserts data into the database
+     *
      * @param query The query that needs to be executed
      * @return Value that represents if the query was successfully executed
      */
@@ -281,13 +283,18 @@ public class Ps3SQLDatabase {
             rowsAffected = statement.executeUpdate(query);
         } catch (SQLException sql) {
             System.err.println("Setting data to database failed");
+            return false;
         }
-        return rowsAffected > 0;
+        if (rowsAffected > 0) {
+            flag = true;
+        } 
+        return flag;
     }
 
     /**
      * Method that inserts data into the database using generic query and its
      * parameters
+     *
      * @param query The query that need to be executed
      * @param parameters The query's parameters
      * @return Values that represents if the query was successfully executed
@@ -309,6 +316,7 @@ public class Ps3SQLDatabase {
 
     /**
      * Getter method for the protocol needed for the connection to the database
+     *
      * @return The protocol
      */
     public String getProtocol() {
@@ -317,6 +325,7 @@ public class Ps3SQLDatabase {
 
     /**
      * Getter method for the database the user wants to connect to
+     *
      * @return The database name
      */
     public String getDatabase() {
@@ -324,7 +333,8 @@ public class Ps3SQLDatabase {
     }
 
     /**
-     * Getter method for the host of the server 
+     * Getter method for the host of the server
+     *
      * @return The host name
      */
     public String getHost() {
@@ -333,6 +343,7 @@ public class Ps3SQLDatabase {
 
     /**
      * Getter method for the port number on the server
+     *
      * @return The port number
      */
     public String getPort() {
@@ -341,6 +352,7 @@ public class Ps3SQLDatabase {
 
     /**
      * Getter method for the properties of the connection
+     *
      * @return The properties of the connection
      */
     public String getProperties() {
@@ -349,6 +361,7 @@ public class Ps3SQLDatabase {
 
     /**
      * Getter method for the username value
+     *
      * @return The username value
      */
     public String getUsername() {
@@ -357,6 +370,7 @@ public class Ps3SQLDatabase {
 
     /**
      * Getter method for user's password
+     *
      * @return The user's password
      */
     public String getPassword() {

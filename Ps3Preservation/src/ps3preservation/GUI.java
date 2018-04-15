@@ -24,6 +24,7 @@ import ps3preservation.data.Users;
  */
 public class GUI extends JFrame {
     private Users user;
+    
     public GUI(String title, Users user) {
         super(title);
         this.user = user;

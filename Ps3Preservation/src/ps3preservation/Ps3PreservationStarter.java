@@ -25,6 +25,6 @@ public class Ps3PreservationStarter {
             System.err.println("Connection not succefull");
         }
         new LoginFrame(db);
+  
     }
 }
-
