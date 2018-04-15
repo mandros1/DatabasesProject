@@ -18,9 +18,11 @@ import javax.swing.colorchooser.AbstractColorChooserPanel;
  * @author Donat Avdijaj
  */
 public class NorthPanel extends JPanel{
-    
-    public NorthPanel(){
+    private String username;
+    public NorthPanel(String username){
         super();
+        this.username = username;
+        
         setLayout(new GridLayout(1,3));
         add(createSearchPanel());
         add(createTitlePanel());
@@ -59,7 +61,7 @@ public class NorthPanel extends JPanel{
     }
     
     public JPanel createUserPanel(){
-        JLabel userLabel = new JLabel("User");
+        JLabel userLabel = new JLabel(username);
         setImageToLabel(userLabel, "src/media/user.png");
         
         JPanel userPanel = new JPanel();

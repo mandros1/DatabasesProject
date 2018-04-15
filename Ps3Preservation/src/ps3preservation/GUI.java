@@ -16,16 +16,17 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import ps3preservation.data.Users;
 
 /**
  *
  * @author Donat Avdijaj
  */
 public class GUI extends JFrame {
-    
-    public GUI(String title) {
+    private Users user;
+    public GUI(String title, Users user) {
         super(title);
-        
+        this.user = user;
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
@@ -45,7 +46,7 @@ public class GUI extends JFrame {
         contentPanel.add(new CenterPanel("GAME_NAME5", "placeholder.jpg"));
         contentPanel.add(new CenterPanel("GAME_NAME6", "placeholder.jpg"));
         
-        centerPanel.add(new NorthPanel(), BorderLayout.NORTH);
+        centerPanel.add(new NorthPanel(user.getUsername()), BorderLayout.NORTH);
         centerPanel.add(contentPanel, BorderLayout.CENTER);
         
         mainPanel.add(centerPanel, BorderLayout.CENTER);
@@ -99,8 +100,8 @@ public class GUI extends JFrame {
         setLocationRelativeTo(null);
     }
     
-    public static void main(String[] args) {
-        new GUI("PS3 Preservation Project");
-    }
+//    public static void main(String[] args) {
+//        new GUI("PS3 Preservation Project");
+//    }
     
 }

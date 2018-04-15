@@ -3,9 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/mxa3265/Desktop/DatabasesProject/Ps3Preservation/src/ps3preservation/data/GenericDataClass.java</file>
-            <file>file:/Users/mxa3265/Desktop/DatabasesProject/Ps3Preservation/src/ps3preservation/data/PackageFileXref.java</file>
-            <file>file:/Users/mxa3265/Desktop/DatabasesProject/Ps3Preservation/src/ps3preservation/data/Files.java</file>
+            <file>file:/Users/paolo/NetBeansProjects/DatabasesProject/Ps3Preservation/src/ps3preservation/SidePanel.java</file>
+            <file>file:/Users/paolo/NetBeansProjects/DatabasesProject/Ps3Preservation/src/ps3preservation/ProfilePage.java</file>
+            <file>file:/Users/paolo/NetBeansProjects/DatabasesProject/Ps3Preservation/src/ps3preservation/RegisterFrame.java</file>
+            <file>file:/Users/paolo/NetBeansProjects/DatabasesProject/Ps3Preservation/src/ps3preservation/LoginFrame.java</file>
+            <file>file:/Users/paolo/NetBeansProjects/DatabasesProject/Ps3Preservation/src/ps3preservation/Ps3PreservationStarter.java</file>
+            <file>file:/Users/paolo/NetBeansProjects/DatabasesProject/Ps3Preservation/src/ps3preservation/data/Users.java</file>
+            <file>file:/Users/paolo/NetBeansProjects/DatabasesProject/Ps3Preservation/src/ps3preservation/NorthPanel.java</file>
+            <file>file:/Users/paolo/NetBeansProjects/DatabasesProject/Ps3Preservation/src/ps3preservation/GUI.java</file>
         </group>
     </open-files>
 </project-private>
