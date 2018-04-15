@@ -5,7 +5,7 @@
  */
 package ps3preservation.data;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 
 /**
  *
@@ -16,13 +16,14 @@ public class ReleasePackageXref extends GenericDataClass {
     private int id;
     private int package_id; //not null
     private int license_id; //not null
-    private static final String[] COLUMN_NAMES = {"id", "license_id", "package_id"}; 
+    private static final String[] COLUMN_NAMES = {"id", "license_id", "package_id"};
 
     public ReleasePackageXref(int id, int package_id, int license_id) {
         this.id = id;
         this.package_id = package_id;
         this.license_id = license_id;
-    } 
+        super.populateAttributeList();
+    }
 
     @Override
     public String tableNameGetter() {
@@ -36,21 +37,9 @@ public class ReleasePackageXref extends GenericDataClass {
 
     @Override
     public void setAllTheAttributes(ArrayList<ArrayList<String>> array) {
-        try {
-            for (int i = 0; i <= array.get(0).size(); i++) {
-                switch (i) {
-                    case 1:
-                        setPackage_id(Integer.getInteger(array.get(0).get(i)));
-                        break;
-                    case 2:
-                        setPackage_id(Integer.getInteger(array.get(0).get(i)));
-                        break;
-                }
-            }
-        } catch (NullPointerException npe) {
-            npe.printStackTrace();
-        }
-    } 
+        setPackage_id(Integer.getInteger(array.get(0).get(1)));
+        setPackage_id(Integer.getInteger(array.get(0).get(2)));
+    }
 
     @Override
     public String primaryKeyNameGetter() {
@@ -80,10 +69,9 @@ public class ReleasePackageXref extends GenericDataClass {
 
     public int getLicense_id() {
         return license_id;
-    } 
+    }
 
     public int getId() {
         return id;
     }
-
 }
