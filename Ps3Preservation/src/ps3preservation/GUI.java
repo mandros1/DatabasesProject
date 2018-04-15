@@ -12,7 +12,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -38,12 +37,13 @@ public class GUI extends JFrame {
         
         JPanel contentPanel = new JPanel();
         
-        contentPanel.setLayout(new GridLayout(0, 1));
+        contentPanel.setLayout(new GridLayout(0, 2));
         contentPanel.add(new CenterPanel("GAME_NAME", "placeholder.jpg"));
         contentPanel.add(new CenterPanel("GAME_NAME2", "placeholder.jpg"));
         contentPanel.add(new CenterPanel("GAME_NAME3", "placeholder.jpg"));
         contentPanel.add(new CenterPanel("GAME_NAME4", "placeholder.jpg"));
         contentPanel.add(new CenterPanel("GAME_NAME5", "placeholder.jpg"));
+        contentPanel.add(new CenterPanel("GAME_NAME6", "placeholder.jpg"));
         
         centerPanel.add(new NorthPanel(), BorderLayout.NORTH);
         centerPanel.add(contentPanel, BorderLayout.CENTER);
