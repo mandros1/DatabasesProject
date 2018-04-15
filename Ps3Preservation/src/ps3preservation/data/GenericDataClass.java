@@ -11,8 +11,10 @@ import java.util.HashMap;
 import ps3preservation.Ps3SQLDatabase;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException; 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,6 +25,7 @@ public abstract class GenericDataClass {
     private ArrayList<ArrayList<String>> data;
     private HashMap<String, String> values;
     private String query;
+    private ArrayList<String> attributeList;
 
     /**
      * Fetch is a method that calls the SELECT statement on the database object that is inherited and used by all the subclasses
@@ -72,28 +75,30 @@ public abstract class GenericDataClass {
     }
     
     /**
-     * 
+     * Declares the ArrayList<String> and populates it with the data from the classes get methods
+     * by running through all the getters of the class to which the object belongs to.
      */
     public void populateAttributeList(){
-        ArrayList<String> attributeList = new ArrayList<>();
+        attributeList = new ArrayList<>();
         try{
+            // using PropertyDescriptor we call all the getters from the specified class and get their return values
             for(PropertyDescriptor propertyDescriptor : 
             Introspector.getBeanInfo(this.getClass()).getPropertyDescriptors()){ 
-                if( propertyDescriptor.getReadMethod() != null && !propertyDescriptor.getName().equals("class")){ 
-                    System.out.println(propertyDescriptor.getReadMethod());
-                    Object obj = propertyDescriptor.getReadMethod().invoke(this);
-                    if( obj instanceof Integer ){
-                        System.out.println("int: ->" + propertyDescriptor.getReadMethod());
+                if( propertyDescriptor.getReadMethod() != null && !propertyDescriptor.getName().equals("class")){  
+                    Object obj = propertyDescriptor.getReadMethod().invoke(this); // calls the getMethod (whichever) 
+                    // depending on the return type it is casted to String and added to the ArrayList<String> attributeList 
+                    if( obj instanceof Integer ){ 
                         attributeList.add(Integer.toString((Integer)obj));
-                    }else if( obj instanceof Double ){
-                        System.out.println("double: ->" + propertyDescriptor.getReadMethod());
+                    }else if( obj instanceof Double ){ 
                         attributeList.add(Double.toString((Double)obj));
                     }else if( obj instanceof byte[] ){
-                        System.out.println("byte[]: ->" + propertyDescriptor.getReadMethod());
-                        attributeList.add(Arrays.toString((byte[])obj));
+                        try { 
+                            attributeList.add(new String( ( byte[])obj, "UTF-8"));
+                        } catch (UnsupportedEncodingException ex) {
+                            Logger.getLogger(GenericDataClass.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     } else {
-                        attributeList.add((String)obj);
-                        System.out.println("String: ->" + propertyDescriptor.getReadMethod());
+                        attributeList.add((String)obj); 
                     }
                 } 
             }
@@ -111,7 +116,7 @@ public abstract class GenericDataClass {
      */
     public HashMap<String, String> createAttributeMap() {
         String [] attributeNames = attributeNamesGetter();
-        ArrayList<String> attributeList = attributeListGetter();
+        attributeList = attributeListGetter();
         HashMap<String, String> map = new HashMap<>();
         for(int i=0; i<attributeNames.length; i++){
             map.put(attributeNames[i], attributeList.get(i));
@@ -120,24 +125,29 @@ public abstract class GenericDataClass {
     }
         
     /**
-     * 
-     * @return 
+     * Accessor for the attributeList which holds the values of the attributes
+     * @return ArrayList<String> attributeList which holds the attribute values for the specific class
      */
-    public abstract ArrayList<String> attributeListGetter();
+    public ArrayList<String> attributeListGetter(){
+        return attributeList;
+    }
     
     /**
-     * 
+     * Mutator for the attributeList which holds the values of the attributes
+     * @param arrList is the arrayList of String that is set to the attributeList
      */
-    public abstract void setAttributeList(ArrayList<String> arrList);
+    public void setAttributeList(ArrayList<String> arrList){
+        attributeList = arrList;
+    }
     
     /**
-     * 
-     * @return 
+     * Accessor for the column names/names of the attributes for specific module
+     * @return String array (String []) that contains the names of the columns
      */
     public abstract String[] attributeNamesGetter();
     
     /**
-     * gets the table name for each module
+     * Accessor for the table name for specific module
      * @return String value of the table name
      */
     public abstract String tableNameGetter();

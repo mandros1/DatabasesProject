@@ -28,18 +28,9 @@ public class PackageFileXref extends GenericDataClass {
     /**
      * Method that goes through all the get methods for our attributes and
      * populates an attributeList Arraylist with data
-     */
-    public void populateAttributeList() {
-        attributeList = new ArrayList<>();
-        attributeList.add("" + getId());
-        attributeList.add("" + getPackage_id());
-        attributeList.add("" + getFile_id());
-    }
+     */ 
     
-    
-    public String convertToString(){
-        
-    }
+     
     
     @Override
     public String tableNameGetter() {
