@@ -13,6 +13,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -148,8 +150,8 @@ public class GUI extends JFrame {
                 public void mouseClicked(MouseEvent e) {
                     for (CenterPanel item : contentArray) {
                         if (searchField.getText().equals(item.getContentLabel().getText())) {
-//                            JOptionPane.showMessageDialog(null,item,"Search result",JOptionPane.PLAIN_MESSAGE);
-                            JFrame frame = new JFrame();
+                            JFrame frame = new JFrame(item.getContentLabel().getText());
+                            frame.setIconImage(new ImageIcon("src/media/placeholder.jpg").getImage());
                             frame.add(item);
                             frame.pack();
                             frame.setSize(450, 300);
@@ -159,10 +161,28 @@ public class GUI extends JFrame {
                     }
                 }
             });
-
+           
             setImageToLabel(searchLabel, "src/media/search.png");
             searchField = new JTextField(15);
-
+            
+             searchField.addKeyListener(new KeyAdapter() {
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                         for (CenterPanel item : contentArray) {
+                        if (searchField.getText().equals(item.getContentLabel().getText())) {
+                            JFrame frame = new JFrame(item.getContentLabel().getText());
+                            frame.setIconImage(new ImageIcon("src/media/placeholder.jpg").getImage());
+                            frame.add(item);
+                            frame.pack();
+                            frame.setSize(450, 300);
+                            frame.setLocationRelativeTo(null);
+                            frame.setVisible(true);
+                        }
+                    }
+                    }
+                }
+            });
+            
             JPanel searchPanel = new JPanel();
             searchPanel.add(searchLabel);
             searchPanel.add(searchField);
