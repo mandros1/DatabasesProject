@@ -215,7 +215,7 @@ public class GUI extends JFrame {
                 addComponents();
                 setVisible(true);
                 setLocationRelativeTo(null);
-                setDefaultCloseOperation(EXIT_ON_CLOSE);
+                setDefaultCloseOperation(DISPOSE_ON_CLOSE);
                 setMinimumSize(new Dimension(200, 250));
                 pack();
             }
