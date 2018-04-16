@@ -57,7 +57,7 @@ public class GUI extends JFrame {
         contentPanel.setLayout(new GridLayout(0, 2));
 
         contentArray = new ArrayList<CenterPanel>();
-        
+
         for (int i = 0; i < 6; i++) {
             CenterPanel panel = new CenterPanel("GAME_NAME" + (i + 1), "placeholder.jpg");
             contentArray.add(panel);
@@ -147,7 +147,7 @@ public class GUI extends JFrame {
             searchLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     for (CenterPanel item : contentArray) {
-                        if(searchField.getText().equals(item.getContentLabel().getText())){
+                        if (searchField.getText().equals(item.getContentLabel().getText())) {
 //                            JOptionPane.showMessageDialog(null,item,"Search result",JOptionPane.PLAIN_MESSAGE);
                             JFrame frame = new JFrame();
                             frame.add(item);
@@ -212,7 +212,7 @@ public class GUI extends JFrame {
                 addComponents();
                 setVisible(true);
                 setLocationRelativeTo(null);
-                setDefaultCloseOperation(EXIT_ON_CLOSE);
+                setDefaultCloseOperation(DISPOSE_ON_CLOSE);
                 setMinimumSize(new Dimension(200, 250));
                 pack();
             }
