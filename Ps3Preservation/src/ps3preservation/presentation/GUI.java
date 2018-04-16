@@ -18,9 +18,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import static java.util.Objects.hash;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -28,6 +28,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import ps3presentation.business.Files;
+import ps3presentation.business.Licenses;
+import ps3presentation.business.PackageFileXref;
+import ps3presentation.business.Packages;
+import ps3presentation.business.ReleasePackageXref;
+import ps3presentation.business.Releases;
+import ps3presentation.business.Software;
 import ps3presentation.business.Users;
 
 /**
@@ -59,10 +66,17 @@ public class GUI extends JFrame {
         contentArray = new ArrayList<CenterPanel>();
 
         for (int i = 0; i < 6; i++) {
+            
             CenterPanel panel = new CenterPanel("GAME_NAME" + (i + 1), "placeholder.jpg");
             panel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent me) {
-                    System.out.println(".mouseClicked()");
+                    initializeObjects("GAME_NAME1");
+                    JFrame frame = new JFrame();
+                    frame.add(panel);
+                    frame.pack();
+                    frame.setSize(450, 300);
+                    frame.setLocationRelativeTo(null);
+                    frame.setVisible(true);
                 }
             });
             contentArray.add(panel);
@@ -77,7 +91,15 @@ public class GUI extends JFrame {
         add(mainPanel);
         initializeMainFrame();
     }
-
+    public void initializeObjects(String text){
+       Software s = new Software(1, text);
+        Releases release = new Releases("1", 0, "");
+        ReleasePackageXref releasePackage = new ReleasePackageXref(0, 0, 0);
+//        Packages packageSoftware = new Packages(0, "", "", "", "", "", "", 0.0, 0.0, 0, "".getBytes(), 0, new Byte(""));
+        PackageFileXref packageFile = new PackageFileXref(0, 0, 0);
+        Licenses licence = new Licenses(0, "", "".getBytes(), 0);
+        Files file = new Files(0, "", "".getBytes() , 0);
+    }
     public void setProperFrameSize() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -276,11 +298,7 @@ public class GUI extends JFrame {
 
             JPanel imgPanel = new JPanel();
             JLabel imgLabel = new JLabel();
-            imgPanel.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent me) {
-                    System.out.println(".mouseClicked()");
-                }
-            });
+
             ImageIcon icon = new ImageIcon("src/media/" + img);
             Image scaleImage = icon.getImage().getScaledInstance(158, 188, Image.SCALE_DEFAULT);
 
