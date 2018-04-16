@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ps3preservation.data;
+package ps3presentation.business;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;

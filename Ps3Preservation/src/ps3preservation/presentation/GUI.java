@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ps3preservation;
+package ps3preservation.presentation;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,18 +17,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import ps3preservation.data.Users;
+import ps3presentation.business.Users;
 
 /**
  *
@@ -60,6 +58,11 @@ public class GUI extends JFrame {
 
         for (int i = 0; i < 6; i++) {
             CenterPanel panel = new CenterPanel("GAME_NAME" + (i + 1), "placeholder.jpg");
+            panel.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent me){
+                    System.out.println(".mouseClicked()");
+                }
+            });
             contentArray.add(panel);
             contentPanel.add(panel);
         }
@@ -113,7 +116,7 @@ public class GUI extends JFrame {
         setProperFrameSize();
         initializeMenuBar();
         pack();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
         setLocationRelativeTo(null);
     }
@@ -147,7 +150,7 @@ public class GUI extends JFrame {
             searchLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     for (CenterPanel item : contentArray) {
-                        if (searchField.getText().equals(item.getContentLabel().getText())) {
+                        if (searchField.getText().equalsIgnoreCase(item.getContentLabel().getText())) {
 //                            JOptionPane.showMessageDialog(null,item,"Search result",JOptionPane.PLAIN_MESSAGE);
                             JFrame frame = new JFrame();
                             frame.add(item);
@@ -212,7 +215,7 @@ public class GUI extends JFrame {
                 addComponents();
                 setVisible(true);
                 setLocationRelativeTo(null);
-                setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                setDefaultCloseOperation(EXIT_ON_CLOSE);
                 setMinimumSize(new Dimension(200, 250));
                 pack();
             }
@@ -242,9 +245,7 @@ public class GUI extends JFrame {
 
             JPanel contentPanel = new JPanel();
             contentLabel = new JLabel(gameName);
-
             contentPanel.setLayout(new GridLayout(2, 1));
-
             JPanel areaPanel = new JPanel();
             JTextArea contentArea = new JTextArea(20, 20);
             contentArea.setLineWrap(true);
@@ -258,7 +259,11 @@ public class GUI extends JFrame {
 
             JPanel imgPanel = new JPanel();
             JLabel imgLabel = new JLabel();
-
+            imgPanel.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent me){
+                    System.out.println(".mouseClicked()");
+                }
+            });
             ImageIcon icon = new ImageIcon("src/media/" + img);
             Image scaleImage = icon.getImage().getScaledInstance(158, 188, Image.SCALE_DEFAULT);
 

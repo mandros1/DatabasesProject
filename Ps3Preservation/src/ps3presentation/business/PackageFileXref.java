@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ps3preservation.data;
+package ps3presentation.business;
 
+import ps3presentation.business.GenericDataClass;
 import java.util.ArrayList; 
 
 /**
