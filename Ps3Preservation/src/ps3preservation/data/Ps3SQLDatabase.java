@@ -1,5 +1,6 @@
-package ps3preservation;
+package ps3preservation.data;
 
+import ps3preservation.presentation.*;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;

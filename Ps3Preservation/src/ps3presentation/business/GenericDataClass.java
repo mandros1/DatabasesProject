@@ -3,18 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ps3preservation.data;
+package ps3presentation.business;
 
 import java.beans.IntrospectionException;
 import java.util.ArrayList; 
 import java.util.HashMap; 
-import ps3preservation.Ps3SQLDatabase;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException; 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import ps3preservation.data.Ps3SQLDatabase;
 
 /**
  *

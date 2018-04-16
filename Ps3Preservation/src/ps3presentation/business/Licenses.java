@@ -1,5 +1,6 @@
-package ps3preservation.data;
+package ps3presentation.business;
 
+import ps3presentation.business.GenericDataClass;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 

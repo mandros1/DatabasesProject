@@ -1,4 +1,4 @@
-package ps3preservation;
+package ps3preservation.presentation;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
@@ -16,7 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import ps3preservation.data.Users;
+import ps3presentation.business.Users;
+import ps3preservation.data.Ps3SQLDatabase;
 
 /**
  *

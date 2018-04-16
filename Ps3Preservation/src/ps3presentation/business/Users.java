@@ -1,7 +1,8 @@
-package ps3preservation.data;
+package ps3presentation.business;
 
 import java.util.ArrayList;
-import ps3preservation.Ps3SQLDatabase;
+import ps3preservation.data.Ps3SQLDatabase;
+import ps3preservation.data.Ps3SQLDatabase;
 
 /**
  *
@@ -13,6 +14,10 @@ public class Users {
     private int id;
     private String username;
     private String password;
+    private String firstName = "";
+    private String lastName = "";
+    private String email = "";
+    private Ps3SQLDatabase db;
 
     public String getFirstName() {
         return firstName;
@@ -25,11 +30,6 @@ public class Users {
     public String getEmail() {
         return email;
     }
-    private String firstName = "";
-    private String lastName = "";
-    private String email = "";
-
-    private Ps3SQLDatabase db;
 
     public Users(Ps3SQLDatabase db, String username, String password) {
         this.username = username;
@@ -54,24 +54,26 @@ public class Users {
         this.username = username;
         this.password = password;
     }
-    public boolean createUser(){
-        int number = (int)(Math.random()*1000);
-        return db.setData("insert into users values("+number+",'"+username+"','"+password+"')");
+
+    public boolean createUser() {
+        return db.setData("insert into users(username,password) values('" + username + "','" + password + "')");
     }
-    public boolean checkAvailability(){
-        ArrayList<ArrayList<String>> result = db.getData("select id from users where username = '"+username+"'");
-        if(result.isEmpty()){
+
+    public boolean checkAvailability() {
+        ArrayList<ArrayList<String>> result = db.getData("select id from users where username = '" + username + "'");
+        if (result.isEmpty()) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
+
     public boolean authenticate() {
-        ArrayList<ArrayList<String>> result = db.getData("select id from users where username = '"+username+"' and password = '"+password+"'");
-        if(result.size() == 1){
+        ArrayList<ArrayList<String>> result = db.getData("select id from users where username = '" + username + "' and password = '" + password + "'");
+        if (result.size() == 1) {
             this.id = Integer.parseInt(result.get(0).get(0));
             return true;
-        }else{
+        } else {
             return false;
         }
     }
