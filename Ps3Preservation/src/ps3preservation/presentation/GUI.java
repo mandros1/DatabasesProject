@@ -27,6 +27,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import ps3presentation.business.Files;
@@ -49,6 +50,9 @@ public class GUI extends JFrame {
     private JTextField searchField;
     private ArrayList<CenterPanel> contentArray;
     private Ps3SQLDatabase database;
+    private JPanel contentPanel;
+    private JPanel centerPanel;
+    private JScrollPane scrollableContent;
 
     public GUI(String title, Users user, Ps3SQLDatabase database) {
         super(title);
@@ -63,36 +67,26 @@ public class GUI extends JFrame {
 
         centerPanel.setLayout(new BorderLayout());
 
-        JPanel contentPanel = new JPanel();
+        contentPanel = new JPanel();
 
-        contentPanel.setLayout(new GridLayout(0, 2));
+        contentPanel.setLayout(new GridLayout(0, 1));
 
         contentArray = new ArrayList<CenterPanel>();
 
-        for (int i = 0; i < 6; i++) {
+        NorthPanel northPanel = new NorthPanel(user);
 
-            CenterPanel panel = new CenterPanel("GAME_NAME" + (i + 1), "placeholder.jpg");
-            panel.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent me) {
-                    initializeObjects("GAME_NAME1");
-                    JFrame frame = new JFrame();
-                    frame.add(panel);
-                    frame.pack();
-                    frame.setSize(450, 300);
-                    frame.setLocationRelativeTo(null);
-                    frame.setVisible(true);
-                }
-            });
-            contentArray.add(panel);
-            contentPanel.add(panel);
-        }
+        scrollableContent = new JScrollPane(contentPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        centerPanel.add(new NorthPanel(user), BorderLayout.NORTH);
-        centerPanel.add(contentPanel, BorderLayout.CENTER);
+        northPanel.findGames("");
+        
+        centerPanel.add(northPanel, BorderLayout.NORTH);
+        centerPanel.add(scrollableContent, BorderLayout.CENTER);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
         add(mainPanel);
+        
         initializeMainFrame();
     }
 
@@ -221,13 +215,35 @@ public class GUI extends JFrame {
             ArrayList<ArrayList<String>> gamesFound = s.getAllGames(gameName);
             ArrayList<Software> software = new ArrayList<>();
             for (ArrayList list : gamesFound) {
-                software.add(new Software(Integer.parseInt(""+list.get(0)), ""+list.get(1)));
+                software.add(new Software(Integer.parseInt("" + list.get(0)), "" + list.get(1)));
             }
             displayGames(software);
         }
-        
-        public void displayGames(ArrayList software){
-            JOptionPane.showMessageDialog(null,String.format("\nFound %d games", software.size()));
+
+        public void displayGames(ArrayList<Software> software) {
+//            JOptionPane.showMessageDialog(null, String.format("\nFound %d games", software.size()));
+            int tempCount = 0;
+            for (Software object : software) {
+                System.out.println(object.getName());
+                CenterPanel panel = new CenterPanel(object.getName(), String.valueOf(object.getId()) + "TTT" + tempCount, "placeholder.jpg");
+                contentArray.add(panel);
+                if (++tempCount > 10) {
+                    break;
+                }
+            }
+            System.out.println("");
+            
+            contentPanel.removeAll();
+//            contentPanel.setLayout(new GridLayout(0, 1));
+
+            contentPanel.revalidate();
+            contentPanel.repaint();
+
+            for (int i = 0; i < contentArray.size(); i++) {
+                contentPanel.add(contentArray.get(i));
+            }
+            contentPanel.revalidate();
+            contentPanel.repaint();
         }
 
         public JPanel createTitlePanel() {
@@ -294,22 +310,22 @@ public class GUI extends JFrame {
 
         JLabel contentLabel;
 
-        public CenterPanel(String gameName, String img) {
+        public CenterPanel(String gameName, String gameID, String img) {
             super();
             setLayout(new GridLayout(1, 2));
 
             JPanel contentPanel = new JPanel();
-            contentLabel = new JLabel(gameName);
+            contentLabel = new JLabel(gameID + ": " + gameName);
             contentPanel.setLayout(new GridLayout(2, 1));
             JPanel areaPanel = new JPanel();
-            JTextArea contentArea = new JTextArea(20, 20);
-            contentArea.setLineWrap(true);
-            contentArea.setWrapStyleWord(true);
-            contentArea.setEditable(false);
-            contentArea.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad llamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+//            JTextArea contentArea = new JTextArea(20, 20);
+//            contentArea.setLineWrap(true);
+//            contentArea.setWrapStyleWord(true);
+//            contentArea.setEditable(false);
+//            contentArea.setText("TEST");
 
             contentPanel.add(contentLabel);
-            areaPanel.add(contentArea);
+//            areaPanel.add(contentArea);
             contentPanel.add(areaPanel);
 
             JPanel imgPanel = new JPanel();
