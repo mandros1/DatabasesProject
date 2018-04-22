@@ -5,8 +5,8 @@
  */
 package ps3presentation.business;
 
-import ps3presentation.business.GenericDataClass;
 import java.util.ArrayList;
+import ps3preservation.data.Ps3SQLDatabase;
 
 /**
  *
@@ -17,7 +17,7 @@ public class Software extends GenericDataClass{
     private int id; //not null
     private String name; //not null
     private static final String[] COLUMN_NAMES = {"id", "name"};
-
+    private Ps3SQLDatabase database;
     /**
      * 
      * @param id
@@ -28,7 +28,13 @@ public class Software extends GenericDataClass{
         this.name = name;
         super.populateAttributeList();
     }
-      
+    public Software(Ps3SQLDatabase database){
+        this.database = database;
+    }
+    public ArrayList getAllGames(String nameCondition){
+        ArrayList<ArrayList<String>>results = database.getData("select * from software where name like '%"+nameCondition+"%'");
+        return results;
+    }
     @Override
     public String[] attributeNamesGetter() {
         return COLUMN_NAMES;

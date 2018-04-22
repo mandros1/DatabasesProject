@@ -2,7 +2,6 @@ package ps3presentation.business;
 
 import java.util.ArrayList;
 import ps3preservation.data.Ps3SQLDatabase;
-import ps3preservation.data.Ps3SQLDatabase;
 
 /**
  *

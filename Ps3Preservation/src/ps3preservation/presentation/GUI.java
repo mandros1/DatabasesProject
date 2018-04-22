@@ -25,6 +25,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -36,6 +37,7 @@ import ps3presentation.business.ReleasePackageXref;
 import ps3presentation.business.Releases;
 import ps3presentation.business.Software;
 import ps3presentation.business.Users;
+import ps3preservation.data.Ps3SQLDatabase;
 
 /**
  *
@@ -46,10 +48,12 @@ public class GUI extends JFrame {
     private Users user;
     private JTextField searchField;
     private ArrayList<CenterPanel> contentArray;
+    private Ps3SQLDatabase database;
 
-    public GUI(String title, Users user) {
+    public GUI(String title, Users user, Ps3SQLDatabase database) {
         super(title);
         this.user = user;
+        this.database = database;
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
@@ -66,7 +70,7 @@ public class GUI extends JFrame {
         contentArray = new ArrayList<CenterPanel>();
 
         for (int i = 0; i < 6; i++) {
-            
+
             CenterPanel panel = new CenterPanel("GAME_NAME" + (i + 1), "placeholder.jpg");
             panel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent me) {
@@ -91,15 +95,17 @@ public class GUI extends JFrame {
         add(mainPanel);
         initializeMainFrame();
     }
-    public void initializeObjects(String text){
-       Software s = new Software(1, text);
+
+    public void initializeObjects(String text) {
+//        Software s = new Software(1, text);
         Releases release = new Releases("1", 0, "");
         ReleasePackageXref releasePackage = new ReleasePackageXref(0, 0, 0);
 //        Packages packageSoftware = new Packages(0, "", "", "", "", "", "", 0.0, 0.0, 0, "".getBytes(), 0, new Byte(""));
         PackageFileXref packageFile = new PackageFileXref(0, 0, 0);
         Licenses licence = new Licenses(0, "", "".getBytes(), 0);
-        Files file = new Files(0, "", "".getBytes() , 0);
+        Files file = new Files(0, "", "".getBytes(), 0);
     }
+
     public void setProperFrameSize() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -146,7 +152,9 @@ public class GUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        new GUI("PS3 Preservation Project", new Users(1, "test1", "test2"));
+        Ps3SQLDatabase db = new Ps3SQLDatabase("jdbc", "mysql", "hypercubed.co", "3306", "ps3_preservation?useSSL=false", "ps3_preservation", "M2ZUdOq765uSHhbr");
+        db.connect();
+        new GUI("PS3 Preservation Project", new Users(1, "test1", "test2"), db);
     }
 
     class NorthPanel extends JPanel {
@@ -173,16 +181,17 @@ public class GUI extends JFrame {
             JLabel searchLabel = new JLabel("Search: ");
             searchLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
-                    for (CenterPanel item : contentArray) {
-                        if (searchField.getText().equalsIgnoreCase(item.getContentLabel().getText())) {
-                            JFrame frame = new JFrame();
-                            frame.add(item);
-                            frame.pack();
-                            frame.setSize(450, 300);
-                            frame.setLocationRelativeTo(null);
-                            frame.setVisible(true);
-                        }
-                    }
+                    findGames(searchField.getText());
+//                    for (CenterPanel item : contentArray) {
+//                        if (searchField.getText().equalsIgnoreCase(item.getContentLabel().getText())) {
+//                            JFrame frame = new JFrame();
+//                            frame.add(item);
+//                            frame.pack();
+//                            frame.setSize(450, 300);
+//                            frame.setLocationRelativeTo(null);
+//                            frame.setVisible(true);
+//                        }
+//                    }
                 }
             });
 
@@ -191,15 +200,8 @@ public class GUI extends JFrame {
 
             searchField.addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent e) {
-                    for (CenterPanel item : contentArray) {
-                        if (searchField.getText().equalsIgnoreCase(item.getContentLabel().getText())) {
-                            JFrame frame = new JFrame();
-                            frame.add(item);
-                            frame.pack();
-                            frame.setSize(450, 300);
-                            frame.setLocationRelativeTo(null);
-                            frame.setVisible(true);
-                        }
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        findGames(searchField.getText());
                     }
                 }
             }
@@ -212,6 +214,20 @@ public class GUI extends JFrame {
             searchPanel.setBackground(Color.LIGHT_GRAY);
 
             return searchPanel;
+        }
+
+        public void findGames(String gameName) {
+            Software s = new Software(database);
+            ArrayList<ArrayList<String>> gamesFound = s.getAllGames(gameName);
+            ArrayList<Software> software = new ArrayList<>();
+            for (ArrayList list : gamesFound) {
+                software.add(new Software(Integer.parseInt(""+list.get(0)), ""+list.get(1)));
+            }
+            displayGames(software);
+        }
+        
+        public void displayGames(ArrayList software){
+            JOptionPane.showMessageDialog(null,String.format("\nFound %d games", software.size()));
         }
 
         public JPanel createTitlePanel() {

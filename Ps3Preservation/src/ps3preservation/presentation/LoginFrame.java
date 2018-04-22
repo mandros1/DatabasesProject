@@ -118,7 +118,7 @@ public class LoginFrame extends JFrame {
                             @Override
                             public void run() {
                                 disposeWindow();
-                                new GUI("PS3 Preservation Project User: " + username, user);
+                                new GUI("PS3 Preservation Project User: " + username, user, db);
                             }
 
                         }, 1000);
