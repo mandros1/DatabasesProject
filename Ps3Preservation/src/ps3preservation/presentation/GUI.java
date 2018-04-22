@@ -222,31 +222,31 @@ public class GUI extends JFrame {
 
         public void displayGames(ArrayList<Software> software) {
 //            JOptionPane.showMessageDialog(null, String.format("\nFound %d games", software.size()));
+            contentArray.clear();
             int tempCount = 0;
             for (Software object : software) {
                 System.out.println(object.getName());
                 CenterPanel panel = new CenterPanel(object.getName(), String.valueOf(object.getId()) + "TTT" + tempCount, "placeholder.jpg");
+                panel.addMouseListener(new MouseAdapter() {
+                    public void mouseClicked(MouseEvent e) {
+                        System.out.println(panel.getGameID());
+                    }
+                });
                 contentArray.add(panel);
                 if (++tempCount > 10) {
                     break;
                 }
             }
-            System.out.println("");
 
             contentPanel.removeAll();
-//            contentPanel.setLayout(new GridLayout(0, 1));
-
-            contentPanel.revalidate();
-            contentPanel.repaint();
 
             for (int i = 0; i < contentArray.size(); i++) {
                 contentPanel.add(contentArray.get(i));
-                contentArray.get(i).addMouseListener(new MouseAdapter() {
-                    public void mouseClicked(MouseEvent e) {
-                        String gameID;
-//                        gameID = contentArray.get(i).getGameID();
-                    }
-                });
+//                contentArray.get(i).addMouseListener(new MouseAdapter() {
+//                    public void mouseClicked(MouseEvent e) {
+//                        System.out.println("MEMES");
+//                    }
+//                });
             }
             contentPanel.revalidate();
             contentPanel.repaint();
