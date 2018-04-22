@@ -79,14 +79,14 @@ public class GUI extends JFrame {
                 JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
         northPanel.findGames("");
-        
+
         centerPanel.add(northPanel, BorderLayout.NORTH);
         centerPanel.add(scrollableContent, BorderLayout.CENTER);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
         add(mainPanel);
-        
+
         initializeMainFrame();
     }
 
@@ -232,7 +232,7 @@ public class GUI extends JFrame {
                 }
             }
             System.out.println("");
-            
+
             contentPanel.removeAll();
 //            contentPanel.setLayout(new GridLayout(0, 1));
 
@@ -241,6 +241,12 @@ public class GUI extends JFrame {
 
             for (int i = 0; i < contentArray.size(); i++) {
                 contentPanel.add(contentArray.get(i));
+                contentArray.get(i).addMouseListener(new MouseAdapter() {
+                    public void mouseClicked(MouseEvent e) {
+                        String gameID;
+//                        gameID = contentArray.get(i).getGameID();
+                    }
+                });
             }
             contentPanel.revalidate();
             contentPanel.repaint();
@@ -309,9 +315,13 @@ public class GUI extends JFrame {
     class CenterPanel extends JPanel {
 
         JLabel contentLabel;
+        final String gameID;
 
         public CenterPanel(String gameName, String gameID, String img) {
             super();
+
+            this.gameID = gameID;
+
             setLayout(new GridLayout(1, 2));
 
             JPanel contentPanel = new JPanel();
@@ -343,6 +353,10 @@ public class GUI extends JFrame {
 
         public JLabel getContentLabel() {
             return contentLabel;
+        }
+
+        public String getGameID() {
+            return gameID;
         }
 
         public void setContentLabel(JLabel contentLabel) {
