@@ -15,8 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -542,5 +541,14 @@ public class GUI extends JFrame {
         int exp = (int) (Math.log(bytes) / Math.log(unit));
         String pre = ("KMGTPE").charAt(exp - 1) + ("i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
+    public static byte[] getBytesFromInputStream(InputStream is) throws IOException {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+        byte[] buffer = new byte[0xFFFF];
+        for(int len=is.read(buffer);len!=-1;len=is.read(buffer))
+            os.write(buffer, 0, len);
+
+        return os.toByteArray();
     }
 }

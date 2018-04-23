@@ -1,5 +1,7 @@
 package ps3preservation.data;
 
+import ps3preservation.presentation.GUI;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -237,7 +239,7 @@ public class Ps3SQLDatabase {
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     if (rsmd.getColumnType(i) == -4) {
                         try {
-                            rowOfData.add(new String(Base64.getEncoder().encode(resultSet.getBlob(i).getBinaryStream().readAllBytes())));
+                            rowOfData.add(new String(Base64.getEncoder().encode(GUI.getBytesFromInputStream(resultSet.getBlob(i).getBinaryStream()))));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
