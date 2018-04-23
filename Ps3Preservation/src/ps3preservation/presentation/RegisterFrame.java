@@ -19,6 +19,9 @@ import ps3presentation.business.Users;
 import ps3preservation.data.Ps3SQLDatabase;
 
 /**
+ * Class that handles user registration. Frame is displayed that asks for user
+ * information, check if information is valid and data is free to use and
+ * creates the user
  *
  * @author paolo
  */
@@ -31,6 +34,14 @@ public class RegisterFrame extends JFrame {
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX
             = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
+    /**
+     * Constructor that accepts the database connection object which is used to
+     * check data availability and creation and the login frame which is hidden
+     * until is needed
+     *
+     * @param lf The login frame
+     * @param db The database connection object
+     */
     public RegisterFrame(LoginFrame lf, Ps3SQLDatabase db) {
         this.db = db;
         this.loginFrame = lf;
@@ -39,6 +50,9 @@ public class RegisterFrame extends JFrame {
 
     }
 
+    /**
+     * Method that initializes the registration frame and set its size
+     */
     public void initializeFrame() {
         addComponents();
         setTitle("Register");
@@ -49,6 +63,10 @@ public class RegisterFrame extends JFrame {
         pack();
     }
 
+    /**
+     * Method that adds the components to the registration frame and sets their
+     * behavior
+     */
     public void addComponents() {
 
         JPanel inputPanel = new JPanel(new GridLayout(0, 2));
@@ -134,6 +152,9 @@ public class RegisterFrame extends JFrame {
         add(feedbackPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     * Method that disposes the window when is not needed
+     */
     public void disposeWindow() {
         this.setVisible(false);
     }
