@@ -17,9 +17,11 @@ public class Licenses extends GenericDataClass {
     private int user_id; //not null
     private static final String[] COLUMN_NAMES = {"data", "id", "name", "user_id"};
 
+    public Licenses() {
+    } 
+    
     /**
-     * Constructor with parameters
-     *
+     * Constructor with parameters 
      * @param id value for id
      * @param name value for name of the licenses
      * @param data byte array of data
@@ -32,7 +34,15 @@ public class Licenses extends GenericDataClass {
         this.user_id = user_id;
         super.populateAttributeList();
     }
+    
+    public void setAllTheAttributes(ArrayList<ArrayList<String>> array, int pos) {
+        setData((array.get(pos).get(2)).getBytes(Charset.forName("UTF-8")));
+        setId(Integer.parseInt((array.get(pos).get(0))));
+        setName((array.get(pos).get(1)));
+        setUser_id(Integer.parseInt((array.get(pos).get(3))));
 
+    }
+    
     @Override
     public void setAllTheAttributes(ArrayList<ArrayList<String>> array) {
         setData((array.get(0).get(0)).getBytes(Charset.forName("UTF-8")));

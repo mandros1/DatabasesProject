@@ -62,6 +62,24 @@ public abstract class GenericDataClass {
             }
         }
     }
+    
+    public void insertion(Ps3SQLDatabase database) {
+        if (!existCheckUp(database)) {
+            System.out.println("Cannot execute insertion() INSERT: -Data with " + primaryKeyNameGetter() + " primay key and its value of '" + primaryKeyValueGetter() + "' for PRIMARY key already exist in the database.");
+        } else {
+            query = String.format("INSERT INTO %s VALUES(", tableNameGetter());
+            values = createAttributeMap();
+
+            values.forEach((key, value) -> query += " '" +  value + "',");
+            query = query.substring(0, query.length() - 1); // to delete the last comma ","
+            query += ");";
+
+            boolean result = database.setData(query);
+            if (result) {
+                System.out.println("Table update was executed successfully!");
+            }
+        }
+    }
 
     /**
      * Checks if the data with the specific key already exists in the database by calling the SELECT method on the database

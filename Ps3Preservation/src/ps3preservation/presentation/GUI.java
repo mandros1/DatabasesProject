@@ -18,6 +18,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Map;
@@ -116,21 +117,10 @@ public class GUI extends JFrame {
         centerPanel.add(southPanel, BorderLayout.SOUTH);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
-
         add(mainPanel);
-
         initializeMainFrame();
     }
 
-    public void initializeObjects(String text) {
-//        Software s = new Software(1, text);
-        Releases release = new Releases("1", 0, "");
-        ReleasePackageXref releasePackage = new ReleasePackageXref(0, 0, 0);
-//        Packages packageSoftware = new Packages(0, "", "", "", "", "", "", 0.0, 0.0, 0, "".getBytes(), 0, new Byte(""));
-        PackageFileXref packageFile = new PackageFileXref(0, 0, 0);
-        Licenses licence = new Licenses(0, "", "".getBytes(), 0);
-        Files file = new Files(0, "", "".getBytes(), 0);
-    }
 
     public void setProperFrameSize() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -379,6 +369,65 @@ public class GUI extends JFrame {
                 });
                 dataHolder5.add(urlLabel);
                 gameInfoPanel.add(dataHolder5);
+                 JButton addLicenceButton = new JButton("Add Licence for this software");
+                    addLicenceButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            JTextField idField = new JTextField(5);
+                            JTextField nameField = new JTextField(5);
+                            JTextField dataField = new JTextField(5);
+                            JTextField userIdField = new JTextField(5);
+
+                            JPanel myPanel = new JPanel();
+                            myPanel.add(new JLabel("Id (Integer):"));
+                            myPanel.add(idField);
+                            myPanel.add(new JLabel("Name (String):"));
+                            myPanel.add(nameField);
+                            myPanel.add(new JLabel("Data(String):"));
+                            myPanel.add(dataField);
+                            myPanel.add(new JLabel("User Id (Integer):"));
+                            myPanel.add(userIdField);
+                            myPanel.add(Box.createHorizontalStrut(15)); // a spacer
+
+
+                            int result = JOptionPane.showConfirmDialog(null, myPanel,
+                                     "Please Enter values for shown attributes, please follow the appropriate datatypes", JOptionPane.OK_CANCEL_OPTION);
+                            if (result == JOptionPane.OK_OPTION) {
+                               if((database.getData("SELECT * FROM licenses WHERE licenses.id = "+ idField.getText() + ";")).isEmpty()){
+                                   try {
+                                        int id = Integer.parseInt(idField.getText());
+                                        String name =  nameField.getText();
+                                        byte [] arr = (dataField.getText()).getBytes(StandardCharsets.UTF_8);
+                                        int userID = Integer.parseInt(userIdField.getText());
+                                        Licenses lic = new Licenses(id, name, arr, userID);
+                                        lic.insertion(database);
+                                        System.out.println(id + gamePackage.getId());
+                                        String q = String.format("INSERT INTO package_license_xref (license_id, package_id) VALUES(%s, %s);", id, gamePackage.getId());
+                                        database.setData(q);
+                                   } catch (Exception exe) {
+                                       JOptionPane.showMessageDialog(centerPanel, "ERROR: Cannot perform INSERT because you have inputted faulty data, not following the appropriate datatype!");
+                                   }
+                               }
+                            }
+                        }
+                    });
+
+                    gameInfoPanel.add(addLicenceButton, BorderLayout.NORTH);
+
+                // Checking if the package_id exists in the licenses and show them if it does
+                ArrayList<ArrayList<String>> arr = database.getData("SELECT * FROM licenses WHERE licenses.id IN (SELECT package_license_xref.license_id FROM package_license_xref WHERE package_license_xref.package_id=" + gamePackage.getId() + ")");
+                if(!arr.isEmpty()){
+                    JButton licenceButton = new JButton("See licences");
+                    licenceButton.addActionListener(new ActionListener() {
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            generateLicenceFrameDisplay(arr, gamePackage.getId());
+                        }
+                    });
+                    gameInfoPanel.add(licenceButton, BorderLayout.SOUTH);
+                }
+
+
                 gameInfoPanel.setMinimumSize(new Dimension(800, 200));
                 gameInfoPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 panelsPanel.add(gameInfoPanel);
@@ -392,6 +441,53 @@ public class GUI extends JFrame {
             gameFrame.setLocationRelativeTo(null);
             gameFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
+        }
+
+        public void generateLicenceFrameDisplay(ArrayList<ArrayList<String>> arr, int packageID){
+
+                    JFrame licenceFrame = new JFrame();
+                    licenceFrame.setMinimumSize(new Dimension(800, 800));
+                    licenceFrame.setSize(new Dimension(800, 800));
+                    licenceFrame.setMaximumSize(new Dimension(800, 800));
+
+                    JLabel titleLabel = new JLabel("All the Licences for the Package(ID:" + packageID+ ")");
+
+                    JPanel licenceInfoPanel = new JPanel(new GridLayout(0, 1));
+                    licenceInfoPanel.setMinimumSize(new Dimension(800, 200));
+                    licenceInfoPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+                    for(int i=0; i<arr.size(); i++){
+                        Licenses lic = new Licenses();
+                        lic.setAllTheAttributes(arr, i);
+
+                        JPanel dataHolder = new JPanel();
+                        dataHolder.add(new JLabel("Licence ID:"));
+                        dataHolder.add(new JLabel(Integer.toString(lic.getId())));
+                        licenceInfoPanel.add(dataHolder);
+
+                        dataHolder = new JPanel();
+                        dataHolder.add(new JLabel("Licence Name:"));
+                        dataHolder.add(new JLabel(lic.getName()));
+                        licenceInfoPanel.add(dataHolder);
+
+                        dataHolder = new JPanel();
+                        dataHolder.add(new JLabel("Licence Data:"));
+                        dataHolder.add(new JLabel(new String(lic.getData(), StandardCharsets.UTF_8)));
+                        licenceInfoPanel.add(dataHolder);
+
+                        dataHolder = new JPanel();
+                        dataHolder.add(new JLabel("Licence User_ID:"));
+                        dataHolder.add(new JLabel(Integer.toString(lic.getUser_id())));
+                        licenceInfoPanel.add(dataHolder);
+                    }
+
+                    licenceFrame.add(titleLabel, BorderLayout.NORTH);
+                    JScrollPane scrollP = new JScrollPane(licenceInfoPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                    licenceFrame.add(scrollP, BorderLayout.CENTER);
+
+                    licenceFrame.setVisible(true);
+                    licenceFrame.setLocationRelativeTo(null);
+                    licenceFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         }
 
         public JPanel createTitlePanel() {
@@ -542,9 +638,7 @@ public class GUI extends JFrame {
 
     public static String humanReadableByteCount(long bytes) {
         int unit = 1024;
-        if (bytes < unit) {
-            return bytes + " B";
-        }
+        if (bytes < unit) return bytes + " B";
         int exp = (int) (Math.log(bytes) / Math.log(unit));
         String pre = ("KMGTPE").charAt(exp - 1) + ("i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
