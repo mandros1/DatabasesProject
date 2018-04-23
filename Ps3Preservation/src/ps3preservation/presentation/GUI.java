@@ -271,8 +271,6 @@ public class GUI extends JFrame {
             Packages gamePackage = new Packages(software.getId(), database);
             release.getReleaseData();
             gamePackage.getPackageData();
-            System.out.println(gamePackage.getType());
-
             JLabel titleLabel = new JLabel(software.getName());
             titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
             Font font = new Font("Courier", Font.BOLD, 16);
