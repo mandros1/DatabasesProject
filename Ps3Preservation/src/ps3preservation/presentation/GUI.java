@@ -96,7 +96,7 @@ public class GUI extends JFrame {
 
         JPanel southPanel = new JPanel();
         
-        pageDisplay = new JLabel(String.format("<%d>", pageCount));
+        pageDisplay = new JLabel(String.format("<%d>", pageCount + 1));
         
         southPanel.setLayout(new FlowLayout());
         
@@ -104,9 +104,8 @@ public class GUI extends JFrame {
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println(contentPanel.getComponentCount());
                 if(contentPanel.getComponentCount() == 25){
-                pageDisplay.setText(String.format("<%d>", ++pageCount));
+                pageDisplay.setText(String.format("<%d>", ++pageCount + 1));
                 northPanel.findGames(searchField.getText()+ "%");
                 }
             }
@@ -117,8 +116,8 @@ public class GUI extends JFrame {
         previousButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!(pageCount < 1)){
-                pageDisplay.setText(String.format("<%d>", --pageCount));
+                if(!(pageCount == 0)){
+                pageDisplay.setText(String.format("<%d>", --pageCount + 1));
                 northPanel.findGames(searchField.getText() + "%");
                 }
             }
@@ -245,7 +244,7 @@ public class GUI extends JFrame {
             searchLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     pageCount = 0;
-                    pageDisplay.setText(String.format("<%d>", pageCount));
+                    pageDisplay.setText(String.format("<%d>", pageCount + 1));
                     findGames(searchField.getText());
                 }
             });
@@ -257,7 +256,7 @@ public class GUI extends JFrame {
                 public void keyPressed(KeyEvent e) {
                     if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                         pageCount = 0;
-                        pageDisplay.setText(String.format("<%d>", pageCount));
+                        pageDisplay.setText(String.format("<%d>", pageCount + 1));
                         findGames(searchField.getText());
                     }
                 }
