@@ -28,17 +28,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
+import javax.swing.*;
+
 import ps3presentation.business.Files;
 import ps3presentation.business.Licenses;
 import ps3presentation.business.PackageFileXref;
@@ -50,7 +41,6 @@ import ps3presentation.business.Users;
 import ps3preservation.data.Ps3SQLDatabase;
 
 /**
- *
  * @author Donat Avdijaj
  */
 public class GUI extends JFrame {
@@ -62,13 +52,13 @@ public class GUI extends JFrame {
     private JPanel contentPanel;
     private JPanel centerPanel;
     private JScrollPane scrollableContent;
-    
+
 
     public GUI(String title, Users user, Ps3SQLDatabase database) {
         super(title);
         this.user = user;
         this.database = database;
-        
+
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
@@ -178,7 +168,7 @@ public class GUI extends JFrame {
         Ps3SQLDatabase db = new Ps3SQLDatabase("jdbc", "mysql", "hypercubed.co", "3306", "ps3_preservation?useSSL=false", "ps3_preservation", "M2ZUdOq765uSHhbr");
         db.connect();
         new GUI("PS3 Preservation Project", new Users(db, "username", "password", "fistname",
-                "lastname","email"), db);
+                "lastname", "email"), db);
     }
 
     class NorthPanel extends JPanel {
@@ -213,12 +203,12 @@ public class GUI extends JFrame {
             searchField = new JTextField(15);
 
             searchField.addKeyListener(new KeyAdapter() {
-                public void keyPressed(KeyEvent e) {
-                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                        findGames(searchField.getText());
-                    }
-                }
-            }
+                                           public void keyPressed(KeyEvent e) {
+                                               if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                                                   findGames(searchField.getText());
+                                               }
+                                           }
+                                       }
             );
 
             JPanel searchPanel = new JPanel();
@@ -266,65 +256,91 @@ public class GUI extends JFrame {
         }
 
         public void generateAdditionalInfo(Software software) {
+            ArrayList<String> params = new ArrayList<>();
+            params.add(software.primaryKeyValueGetter());
+            ArrayList<Packages> packages = new ArrayList<>();
+            for (ArrayList<String> data : database.getData("SELECT id FROM packages WHERE id IN (SELECT release_packages_xref.package_id FROM release_packages_xref WHERE release_packages_xref.release_id=(SELECT id FROM releases WHERE software_id=?))", params)) {
+                ArrayList<ArrayList<String>> d = new ArrayList<>();
+                d.add(data);
+                Packages s = new Packages(Integer.parseInt(data.get(0)), database);
+                s.getPackageData();
+                packages.add(s);
+            }
             JFrame gameFrame = new JFrame();
             Releases release = new Releases(software.getId(), database);
-            Packages gamePackage = new Packages(software.getId(), database);
+            //Packages gamePackage = new Packages(software.getId(), database);
             release.getReleaseData();
-            gamePackage.getPackageData();
+            //gamePackage.getPackageData();
+
+            JPanel panelsPanel = new JPanel(new GridLayout(0, 1));
+            panelsPanel.setMinimumSize(new Dimension(800, 800));
+            panelsPanel.setSize(new Dimension(800, 800));
+            panelsPanel.setMaximumSize(new Dimension(800, 800));
+
             JLabel titleLabel = new JLabel(software.getName());
             titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
             Font font = new Font("Courier", Font.BOLD, 16);
             titleLabel.setFont(font);
-            JPanel gameInfoPanel = new JPanel(new GridLayout(0, 1));
-            JPanel dataHolder = new JPanel();
-            dataHolder.add(new JLabel("Release Status:"));
-            dataHolder.add(new JLabel(release.getStatus()));
-            gameInfoPanel.add(dataHolder);
-            JPanel dataHolder1 = new JPanel();
-            dataHolder1.add(new JLabel("Type:"));
-            dataHolder1.add(new JLabel("" + gamePackage.getType()));
-            gameInfoPanel.add(dataHolder1);
-            JPanel dataHolder2 = new JPanel();
-            dataHolder2.add(new JLabel("Package Type:"));
-            dataHolder2.add(new JLabel("" + gamePackage.getPackage_type()));
-            gameInfoPanel.add(dataHolder2);
-            JPanel dataHolder3 = new JPanel();
-            dataHolder3.add(new JLabel("Package Size:"));
-            dataHolder3.add(new JLabel("" + gamePackage.getSize()));
-            gameInfoPanel.add(dataHolder3);
-            JPanel dataHolder4 = new JPanel();
-            dataHolder4.add(new JLabel("Sys Version:"));
-            dataHolder4.add(new JLabel("" + gamePackage.getSys_version()));
-            gameInfoPanel.add(dataHolder4);
-            JPanel dataHolder5 = new JPanel();
-            dataHolder5.add(new JLabel("Source URL:"));
-            JLabel urlLabel = new JLabel("Download link");
-            Font fontLink = urlLabel.getFont();
-            Map attributes = fontLink.getAttributes();
-            attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-            urlLabel.setFont(fontLink);
-            urlLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            urlLabel.setForeground(Color.BLUE);
-            urlLabel.addMouseListener(new MouseAdapter() {
-                public void mouseClicked(MouseEvent e) {
-                    Desktop desktop = java.awt.Desktop.getDesktop();
-                    URI oURL;
-                    try {
-                        oURL = new URI(gamePackage.getSource_url());
-                        desktop.browse(oURL);
-                    } catch (URISyntaxException ex) {
-                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+            for (Packages gamePackage :
+                    packages) {
+                JPanel gameInfoPanel = new JPanel(new GridLayout(0, 1));
+                JPanel nameHolder = new JPanel();
+                nameHolder.add(new JLabel("Name:"));
+                nameHolder.add(new JLabel(gamePackage.getName()));
+                gameInfoPanel.add(nameHolder);
+                JPanel dataHolder1 = new JPanel();
+                dataHolder1.add(new JLabel("Type:"));
+                dataHolder1.add(new JLabel("" + gamePackage.getType()));
+                gameInfoPanel.add(dataHolder1);
+                JPanel dataHolder2 = new JPanel();
+                dataHolder2.add(new JLabel("Package Type:"));
+                dataHolder2.add(new JLabel("" + gamePackage.getPackage_type()));
+                gameInfoPanel.add(dataHolder2);
+                JPanel dataHolder3 = new JPanel();
+                dataHolder3.add(new JLabel("Package Size:"));
+                dataHolder3.add(new JLabel(humanReadableByteCount(gamePackage.getSize())));
+                gameInfoPanel.add(dataHolder3);
+                JPanel dataHolder4 = new JPanel();
+                dataHolder4.add(new JLabel("Package Version:"));
+                dataHolder4.add(new JLabel("" + gamePackage.getVersion()));
+                gameInfoPanel.add(dataHolder4);
+                JPanel dataHolder6 = new JPanel();
+                dataHolder6.add(new JLabel("Sys Version:"));
+                dataHolder6.add(new JLabel("" + gamePackage.getSys_version()));
+                gameInfoPanel.add(dataHolder6);
+                JPanel dataHolder5 = new JPanel();
+                dataHolder5.add(new JLabel("Source URL:"));
+                JLabel urlLabel = new JLabel("Download link");
+                Font fontLink = urlLabel.getFont();
+                Map attributes = fontLink.getAttributes();
+                attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+                urlLabel.setFont(fontLink);
+                urlLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                urlLabel.setForeground(Color.BLUE);
+                urlLabel.addMouseListener(new MouseAdapter() {
+                    public void mouseClicked(MouseEvent e) {
+                        Desktop desktop = java.awt.Desktop.getDesktop();
+                        URI oURL;
+                        try {
+                            oURL = new URI(gamePackage.getSource_url());
+                            desktop.browse(oURL);
+                        } catch (URISyntaxException ex) {
+                            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                        }
 
-                }
-            });
-            dataHolder5.add(urlLabel);
-            gameInfoPanel.add(dataHolder5);
-            gameInfoPanel.setSize(new Dimension(200, 200));
+                    }
+                });
+                dataHolder5.add(urlLabel);
+                gameInfoPanel.add(dataHolder5);
+                gameInfoPanel.setMinimumSize(new Dimension(800, 200));
+                gameInfoPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                panelsPanel.add(gameInfoPanel);
+            }
             gameFrame.add(titleLabel, BorderLayout.NORTH);
-            gameFrame.add(gameInfoPanel, BorderLayout.CENTER);
+            JScrollPane scrollPane = new JScrollPane(panelsPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            gameFrame.add(scrollPane, BorderLayout.CENTER);
 
             gameFrame.pack();
             gameFrame.setVisible(true);
@@ -421,8 +437,8 @@ public class GUI extends JFrame {
             setImageToLabel(imgLabel, scaleImage);
             imgPanel.add(imgLabel);
 
-            infoHolder.add(imgPanel,BorderLayout.WEST);
-            infoHolder.add(contentPanel,BorderLayout.CENTER);
+            infoHolder.add(imgPanel, BorderLayout.WEST);
+            infoHolder.add(contentPanel, BorderLayout.CENTER);
             add(infoHolder);
         }
 
@@ -445,4 +461,11 @@ public class GUI extends JFrame {
         }
     }
 
+    public static String humanReadableByteCount(long bytes) {
+        int unit = 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = ("KMGTPE").charAt(exp - 1) + ("i");
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
+    }
 }
