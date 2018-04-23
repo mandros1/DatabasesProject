@@ -5,16 +5,9 @@
  */
 package ps3preservation.presentation;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -52,13 +45,14 @@ public class GUI extends JFrame {
     private JPanel contentPanel;
     private JPanel centerPanel;
     private JScrollPane scrollableContent;
-
+    private int pageCount = 0;
+    private JLabel pageDisplay;
 
     public GUI(String title, Users user, Ps3SQLDatabase database) {
         super(title);
         this.user = user;
         this.database = database;
-
+        
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
@@ -81,8 +75,42 @@ public class GUI extends JFrame {
 
         northPanel.findGames("");
 
+        JPanel southPanel = new JPanel();
+
+        pageDisplay = new JLabel(String.format("<%d>", pageCount + 1));
+
+        southPanel.setLayout(new FlowLayout());
+
+        JButton nextButton = new JButton("Next");
+        nextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(contentPanel.getComponentCount() == 25){
+                pageDisplay.setText(String.format("<%d>", ++pageCount + 1));
+                northPanel.findGames(searchField.getText()+ "%");
+                }
+            }
+        });
+
+        JButton previousButton = new JButton("Previous");
+
+        previousButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!(pageCount == 0)){
+                pageDisplay.setText(String.format("<%d>", --pageCount + 1));
+                northPanel.findGames(searchField.getText() + "%");
+                }
+            }
+        });
+
+        southPanel.add(previousButton);
+        southPanel.add(pageDisplay);
+        southPanel.add(nextButton);
+
         centerPanel.add(northPanel, BorderLayout.NORTH);
         centerPanel.add(scrollableContent, BorderLayout.CENTER);
+        centerPanel.add(southPanel, BorderLayout.SOUTH);
 
         mainPanel.add(centerPanel, BorderLayout.CENTER);
 
@@ -175,6 +203,7 @@ public class GUI extends JFrame {
 
         private Users user;
 
+
         public NorthPanel(Users user) {
             super();
             this.user = user;
@@ -195,6 +224,8 @@ public class GUI extends JFrame {
             JLabel searchLabel = new JLabel("Search: ");
             searchLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
+                    pageCount = 0;
+                    pageDisplay.setText(String.format("<%d>", pageCount + 1));
                     findGames(searchField.getText());
                 }
             });
@@ -203,12 +234,14 @@ public class GUI extends JFrame {
             searchField = new JTextField(15);
 
             searchField.addKeyListener(new KeyAdapter() {
-                                           public void keyPressed(KeyEvent e) {
-                                               if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                                                   findGames(searchField.getText());
-                                               }
-                                           }
-                                       }
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                        pageCount = 0;
+                        pageDisplay.setText(String.format("<%d>", pageCount + 1));
+                        findGames(searchField.getText());
+                    }
+                }
+            }
             );
 
             JPanel searchPanel = new JPanel();
@@ -222,7 +255,7 @@ public class GUI extends JFrame {
 
         public void findGames(String gameName) {
             Software s = new Software(database);
-            ArrayList<ArrayList<String>> gamesFound = s.getAllGames(gameName);
+            ArrayList<ArrayList<String>> gamesFound = s.getAllGames(gameName, pageCount*25);
             ArrayList<Software> software = new ArrayList<>();
             for (ArrayList list : gamesFound) {
                 software.add(new Software(Integer.parseInt("" + list.get(0)), "" + list.get(1)));
@@ -234,16 +267,13 @@ public class GUI extends JFrame {
             contentArray.clear();
             int tempCount = 0;
             for (Software object : software) {
-                CenterPanel panel = new CenterPanel(object.getName(), String.valueOf(object.getId()) + "TTT" + tempCount, "placeholder.jpg");
+                CenterPanel panel = new CenterPanel(object.getName(), String.valueOf(object.getId()), "placeholder.jpg");
                 panel.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         generateAdditionalInfo(object);
                     }
                 });
                 contentArray.add(panel);
-                if (++tempCount > 10) {
-                    break;
-                }
             }
 
             contentPanel.removeAll();
@@ -422,7 +452,7 @@ public class GUI extends JFrame {
             setLayout(new GridLayout(1, 2));
             JPanel infoHolder = new JPanel(new BorderLayout());
             JPanel contentPanel = new JPanel();
-            contentLabel = new JLabel(gameID + ": " + gameName);
+            contentLabel = new JLabel(String.format("<html>Game ID: %s<br><br>Game Title: %s</html>", gameID, gameName));
             contentPanel.setLayout(new GridLayout(2, 1));
             JPanel areaPanel = new JPanel();
             contentPanel.add(contentLabel);
