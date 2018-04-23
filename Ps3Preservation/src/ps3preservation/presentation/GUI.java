@@ -39,6 +39,7 @@ import ps3preservation.data.Ps3SQLDatabase;
 
 /**
  * @author Donat Avdijaj
+ * Class that will handle the visual representation of this project
  */
 public class GUI extends JFrame {
 
@@ -52,6 +53,11 @@ public class GUI extends JFrame {
     private int pageCount = 0;
     private JLabel pageDisplay;
 
+    /**
+    * Class that will handle the visual representation of this project
+    * @param title the title of the frame
+     * @param user the user
+     * @param database    databases used*/
     public GUI(String title, Users user, Ps3SQLDatabase database) {
         super(title);
         this.user = user;
@@ -121,6 +127,23 @@ public class GUI extends JFrame {
         initializeMainFrame();
     }
 
+    /**
+     * Creates the necessary objects for data processing
+     * @param text
+     */
+    public void initializeObjects(String text) {
+//        Software s = new Software(1, text);
+        Releases release = new Releases("1", 0, "");
+        ReleasePackageXref releasePackage = new ReleasePackageXref(0, 0, 0);
+//        Packages packageSoftware = new Packages(0, "", "", "", "", "", "", 0.0, 0.0, 0, "".getBytes(), 0, new Byte(""));
+        PackageFileXref packageFile = new PackageFileXref(0, 0, 0);
+        Licenses licence = new Licenses(0, "", "".getBytes(), 0);
+        Files file = new Files(0, "", "".getBytes(), 0);
+    }
+
+    /**
+     * Sets the frame size according to screen size
+     */
     public void setProperFrameSize() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
@@ -130,6 +153,9 @@ public class GUI extends JFrame {
         setPreferredSize(new Dimension(width, height));
     }
 
+    /**
+     * Creates the Menu bar
+     */
     public void initializeMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
@@ -175,6 +201,9 @@ public class GUI extends JFrame {
         menuBar.add(mnAbout);
     }
 
+    /**
+     * Adds details to the main frame
+     */
     public void initializeMainFrame() {
         ImageIcon img = new ImageIcon("src/media/logo.png");
         setIconImage(img.getImage());
@@ -186,6 +215,7 @@ public class GUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    
     public static void main(String[] args) {
         Ps3SQLDatabase db = new Ps3SQLDatabase("jdbc", "mysql", "hypercubed.co", "3306", "ps3_preservation?useSSL=false", "ps3_preservation", "M2ZUdOq765uSHhbr");
         db.connect();
@@ -193,10 +223,17 @@ public class GUI extends JFrame {
                 "lastname", "email"), db);
     }
 
+    /**
+     * Class to display the title, search bar and user profile
+     */
     class NorthPanel extends JPanel {
 
         private Users user;
 
+        /**
+     * Class to display the title, search bar and user profile
+     * @param user the user that opened the program
+     */
         public NorthPanel(Users user) {
             super();
             this.user = user;
@@ -207,12 +244,21 @@ public class GUI extends JFrame {
             add(createUserPanel());
         }
 
+        /**
+         * Creating the images
+         * @param label 
+         * @param PicURL 
+         */
         public void setImageToLabel(JLabel label, String PicURL) {
             ImageIcon imgThisImg;
             imgThisImg = new ImageIcon(PicURL);
             label.setIcon(imgThisImg);
         }
-
+        
+        /**
+         * Make the panel with the search bar
+         * @return search panel
+         */
         public JPanel createSearchPanel() {
             JLabel searchLabel = new JLabel("Search: ");
             searchLabel.addMouseListener(new MouseAdapter() {
@@ -246,6 +292,10 @@ public class GUI extends JFrame {
             return searchPanel;
         }
 
+        /**
+         * Will find some or all games
+         * @param gameName the name of the game
+         */
         public void findGames(String gameName) {
             Software s = new Software(database);
             ArrayList<ArrayList<String>> gamesFound = s.getAllGames(gameName, pageCount * 25);
@@ -263,6 +313,10 @@ public class GUI extends JFrame {
             displayGames(software);
         }
 
+        /**
+         * Will add the games to the content panel
+         * @param software an array of games
+         */
         public void displayGames(ArrayList<Software> software) {
             contentArray.clear();
             int tempCount = 0;
@@ -285,6 +339,10 @@ public class GUI extends JFrame {
             contentPanel.repaint();
         }
 
+        /**
+         * Generates the additional info to be displayed when a game is clicked on
+         * @param software the game
+         */
         public void generateAdditionalInfo(Software software) {
             ArrayList<String> params = new ArrayList<>();
             params.add(software.primaryKeyValueGetter());
@@ -442,6 +500,11 @@ public class GUI extends JFrame {
 
         private final char[] hexArray = "0123456789ABCDEF".toCharArray();
 
+        /**
+         * WIll turn bytes to hex
+         * @param bytes the bytes
+         * @return the bytes as hex
+         */
         public String bytesToHex(byte[] bytes) {
             char[] hexChars = new char[bytes.length * 2];
             for (int j = 0; j < bytes.length; j++) {
@@ -510,6 +573,10 @@ public class GUI extends JFrame {
             return titlePanel;
         }
 
+        /**
+         * Creates the panel that holds the user
+         * @return 
+         */
         public JPanel createUserPanel() {
             JLabel userLabel = new JLabel(user.getUsername());
             userLabel.addMouseListener(new MouseAdapter() {
@@ -527,13 +594,22 @@ public class GUI extends JFrame {
 
             return userPanel;
         }
-
+        
+        /**
+         * Class that displays user related info 
+         */
         class UserFrame extends JFrame {
 
+            /**
+         * Class that displays user related info 
+         */
             public UserFrame() {
                 initializeFrame();
             }
-
+            
+            /**
+             * Adds the details to the frame
+             */
             public void initializeFrame() {
                 setTitle(user.getUsername());
                 addComponents();
@@ -544,6 +620,9 @@ public class GUI extends JFrame {
                 pack();
             }
 
+            /**
+             * Populates the panel
+             */
             public void addComponents() {
                 JPanel inputPanel = new JPanel(new GridLayout(0, 2));
                 inputPanel.add(new JLabel("First name"));
@@ -559,39 +638,21 @@ public class GUI extends JFrame {
         }
     }
 
+    /**
+     * Panel that holds a given game
+     */
     class CenterPanel extends JPanel {
 
         JLabel contentLabel;
         final String gameID;
 
-        public CenterPanel(String gameName, String gameID, String img) {
-            super();
-            this.setBorder(BorderFactory.createLineBorder(Color.black));
-            this.gameID = gameID;
-
-            setLayout(new GridLayout(1, 2));
-            JPanel infoHolder = new JPanel(new BorderLayout());
-            JPanel contentPanel = new JPanel();
-            contentLabel = new JLabel(String.format("<html>Game ID: %s<br><br>Game Title: %s</html>", gameID, gameName));
-            contentPanel.setLayout(new GridLayout(2, 1));
-            JPanel areaPanel = new JPanel();
-            contentPanel.add(contentLabel);
-            contentPanel.add(areaPanel);
-
-            JPanel imgPanel = new JPanel();
-            JLabel imgLabel = new JLabel();
-
-            ImageIcon icon = new ImageIcon("src/media/" + img);
-            Image scaleImage = icon.getImage().getScaledInstance(100, 125, Image.SCALE_DEFAULT);
-
-            setImageToLabel(imgLabel, scaleImage);
-            imgPanel.add(imgLabel);
-
-            infoHolder.add(imgPanel, BorderLayout.WEST);
-            infoHolder.add(contentPanel, BorderLayout.CENTER);
-            add(infoHolder);
-        }
-
+        /**
+         * Panel that holds a given game 
+         * @param gameName game name
+         * @param gameID game id
+         * @param img game picture
+         */
+       
         public CenterPanel(String gameName, String gameID, BufferedImage img) {
             super();
 
@@ -626,18 +687,32 @@ public class GUI extends JFrame {
             add(infoHolder);
         }
 
+        /**
+         * Get the label
+         * @return the label
+         */
         public JLabel getContentLabel() {
             return contentLabel;
         }
 
+        /**
+         * Get the game ID
+         * @return the game ID
+         */
         public String getGameID() {
             return gameID;
         }
 
+        /**
+         * Set the label
+         */
         public void setContentLabel(JLabel contentLabel) {
             this.contentLabel = contentLabel;
         }
-
+        
+        /**
+         * Set the image
+         */
         public void setImageToLabel(JLabel label, Image PicURL) {
             ImageIcon imgThisImg;
             imgThisImg = new ImageIcon(PicURL);
@@ -645,6 +720,11 @@ public class GUI extends JFrame {
         }
     }
 
+    /**
+     * Turns bytes into a humanly readable count
+     * @param bytes 
+     * @return count of bites in a human friendly way
+     */
     public static String humanReadableByteCount(long bytes) {
         int unit = 1024;
         if (bytes < unit) {
@@ -655,6 +735,12 @@ public class GUI extends JFrame {
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
+    /**
+     * Returns the bytes from the input stream
+     * @param is the stream to be used
+     * @return bytes from the stream
+     * @throws IOException
+     */
     public static byte[] getBytesFromInputStream(InputStream is) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 

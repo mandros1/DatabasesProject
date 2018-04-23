@@ -27,6 +27,9 @@ import javax.swing.JPanel;
  */
 public class SidePanel extends JPanel{
     
+    /**
+     *
+     */
     public SidePanel(){
         super();
         setBackground(Color.GRAY);
@@ -60,6 +63,11 @@ public class SidePanel extends JPanel{
         add(jb);
     }
     
+    /**
+     *
+     * @param label
+     * @param PicURL
+     */
     public void setImageToLabel(JLabel label, String PicURL){
         ImageIcon imgThisImg;
         imgThisImg = new ImageIcon(PicURL);

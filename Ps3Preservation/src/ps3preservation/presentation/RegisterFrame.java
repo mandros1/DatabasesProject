@@ -28,9 +28,18 @@ public class RegisterFrame extends JFrame {
     private JLabel feedbackLabel;
     JPanel buttonPanel;
     LoginFrame loginFrame;
+
+    /**
+     *
+     */
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX
             = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 
+    /**
+     *
+     * @param lf
+     * @param db
+     */
     public RegisterFrame(LoginFrame lf, Ps3SQLDatabase db) {
         this.db = db;
         this.loginFrame = lf;
@@ -39,6 +48,9 @@ public class RegisterFrame extends JFrame {
 
     }
 
+    /**
+     *
+     */
     public void initializeFrame() {
         addComponents();
         setTitle("Register");
@@ -49,6 +61,9 @@ public class RegisterFrame extends JFrame {
         pack();
     }
 
+    /**
+     *
+     */
     public void addComponents() {
 
         JPanel inputPanel = new JPanel(new GridLayout(0, 2));
@@ -134,6 +149,9 @@ public class RegisterFrame extends JFrame {
         add(feedbackPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     *
+     */
     public void disposeWindow() {
         this.setVisible(false);
     }

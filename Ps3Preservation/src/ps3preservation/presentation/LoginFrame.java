@@ -27,11 +27,18 @@ public class LoginFrame extends JFrame {
     private Ps3SQLDatabase db;
     private Users user;
 
+    /**
+     *
+     * @param db
+     */
     public LoginFrame(Ps3SQLDatabase db) {
         this.db = db;
         initializeFrame();
     }
 
+    /**
+     *
+     */
     public void addComponents() {
         JLabel titleLabel = new JLabel("Pres3rve");
         JLabel subtitleLabel = new JLabel("Please login or create an account");
@@ -75,6 +82,9 @@ public class LoginFrame extends JFrame {
         add(feedbackPanel, BorderLayout.SOUTH);
     }
 
+    /**
+     *
+     */
     public void initializeFrame() {
         setTitle("Login");
         addComponents();
@@ -85,16 +95,28 @@ public class LoginFrame extends JFrame {
         pack();
     }
 
+    /**
+     *
+     * @param username
+     * @param password
+     * @return
+     */
     public boolean authenticate(String username, String password) {
         user = new Users(db, username, password);
         return user.authenticate();
 
     }
 
+    /**
+     *
+     */
     public void disposeWindow() {
         this.setVisible(false);
     }
 
+    /**
+     *
+     */
     public void registerUser() {
         disposeWindow();
         new RegisterFrame(this, db);
