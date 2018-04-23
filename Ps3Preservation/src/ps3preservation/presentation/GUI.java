@@ -247,6 +247,17 @@ public class GUI extends JFrame {
         }
 
         public void findGames(String gameName) {
+            JFrame ff = new JFrame();
+            JLabel lab = new JLabel("GAMES ARE LOADING...");
+            JButton but = new JButton("Stress button");
+            but.setPreferredSize(new Dimension(100, 100));
+            lab.setPreferredSize(new Dimension(100, 100));
+            ff.add(but, BorderLayout.SOUTH);
+            ff.setSize(new Dimension(200, 200));
+            ff.add(lab, BorderLayout.NORTH);
+            ff.setVisible(true);
+            ff.setLocationRelativeTo(null);  
+            
             Software s = new Software(database);
             ArrayList<ArrayList<String>> gamesFound = s.getAllGames(gameName, pageCount * 25);
             ArrayList<Software> software = new ArrayList<>();
@@ -259,8 +270,9 @@ public class GUI extends JFrame {
                     e1.printStackTrace();
                 }
                 software.add(e);
-            }
-            displayGames(software);
+            } 
+            displayGames(software); 
+            ff.dispose(); 
         }
 
         public void displayGames(ArrayList<Software> software) {
