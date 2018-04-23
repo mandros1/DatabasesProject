@@ -5,8 +5,15 @@
  */
 package ps3presentation.business;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
+
 import ps3preservation.data.Ps3SQLDatabase;
+
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -18,6 +25,23 @@ public class Software extends GenericDataClass{
     private String name; //not null
     private static final String[] COLUMN_NAMES = {"id", "name"};
     private Ps3SQLDatabase database;
+    private BufferedImage bufImg;
+
+    public BufferedImage getBufImg() {
+        return bufImg;
+    }
+
+    public void setBufImg(BufferedImage bufImg) {
+        this.bufImg = bufImg;
+    }
+    public void setBufImg(String data) {
+        try {
+            bufImg = ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(data.getBytes())));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * 
      * @param id
@@ -52,6 +76,7 @@ public class Software extends GenericDataClass{
     @Override
     public void setAllTheAttributes(ArrayList<ArrayList<String>> array) {
         setName(array.get(0).get(1));
+setBufImg(array.get(0).get(2));
     }
 
     @Override

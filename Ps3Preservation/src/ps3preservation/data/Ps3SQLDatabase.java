@@ -1,5 +1,6 @@
 package ps3preservation.data;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -9,6 +10,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -44,13 +46,13 @@ public class Ps3SQLDatabase {
      * Constructor that accepts all the parameters needed for the connection to
      * the database
      *
-     * @param protocol Type of protocol the user is using to connect
-     * @param database The database the user wants to connect to
-     * @param host The host where the server is located
-     * @param port The port number on which to connect to the database
+     * @param protocol   Type of protocol the user is using to connect
+     * @param database   The database the user wants to connect to
+     * @param host       The host where the server is located
+     * @param port       The port number on which to connect to the database
      * @param properties The properties of the connection
-     * @param username The username of user that is trying to connect
-     * @param password The password of the user that is trying to connect
+     * @param username   The username of user that is trying to connect
+     * @param password   The password of the user that is trying to connect
      */
     public Ps3SQLDatabase(String protocol, String database, String host, String port, String properties, String username, String password) {
         this.protocol = protocol;
@@ -146,9 +148,9 @@ public class Ps3SQLDatabase {
                 stored = "Yes";
             }
             databaseInformation = String.format("\nDatabase infomration\nProduct name: %s Product version: %s\n"
-                    + "Driver version: %s\nTable names: %s\nTable types: %s\n"
-                    + "Supports group by statements:%s\nSupports outer joins: %s\n"
-                    + "Supports statements pooling: %s\nSupports stored procedures: %s\n", dbmd.getDatabaseProductName(), dbmd.getDatabaseProductVersion(),
+                            + "Driver version: %s\nTable names: %s\nTable types: %s\n"
+                            + "Supports group by statements:%s\nSupports outer joins: %s\n"
+                            + "Supports statements pooling: %s\nSupports stored procedures: %s\n", dbmd.getDatabaseProductName(), dbmd.getDatabaseProductVersion(),
                     dbmd.getDriverVersion(), tablesNames, tablesTypes, groups, joins, pooling, stored);
 
         } catch (SQLException ex) {
@@ -162,7 +164,7 @@ public class Ps3SQLDatabase {
      * database
      *
      * @param tableName The name of the table which information needs to be
-     * accesses
+     *                  accesses
      * @return The string containing the information about the table
      */
     public String getTableInformation(String tableName) {
@@ -195,9 +197,9 @@ public class Ps3SQLDatabase {
      * The method that prepares and returns the statement based on a generic
      * query and its parameters
      *
-     * @param statement The statement that needs to be prepared
+     * @param statement  The statement that needs to be prepared
      * @param parameters The parameters that need to be generated into the
-     * statement
+     *                   statement
      * @return The prepared statement ready for execution
      */
     public PreparedStatement prepareStatement(String statement, ArrayList<String> parameters) {
@@ -233,7 +235,15 @@ public class Ps3SQLDatabase {
             while (resultSet.next()) {
                 rowOfData = new ArrayList<>();
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    rowOfData.add(resultSet.getString(i));
+                    if (rsmd.getColumnType(i) == -4) {
+                        try {
+                            rowOfData.add(new String(Base64.getEncoder().encode(resultSet.getBlob(i).getBinaryStream().readAllBytes())));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        rowOfData.add(resultSet.getString(i));
+                    }
                 }
                 resultData.add(rowOfData);
             }
@@ -248,7 +258,7 @@ public class Ps3SQLDatabase {
      * The get data method that prepares a generic query provided to it,
      * executes it and returns data from the database
      *
-     * @param query The query that needs to be executed
+     * @param query      The query that needs to be executed
      * @param parameters The query's parameters that need to be generated
      * @return The data returned from the database
      */
@@ -289,7 +299,7 @@ public class Ps3SQLDatabase {
         }
         if (rowsAffected > 0) {
             flag = true;
-        } 
+        }
         return flag;
     }
 
@@ -297,7 +307,7 @@ public class Ps3SQLDatabase {
      * Method that inserts data into the database using generic query and its
      * parameters
      *
-     * @param query The query that need to be executed
+     * @param query      The query that need to be executed
      * @param parameters The query's parameters
      * @return Values that represents if the query was successfully executed
      */

@@ -14,13 +14,17 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import ps3presentation.business.Files;
@@ -257,8 +261,15 @@ public class GUI extends JFrame {
             Software s = new Software(database);
             ArrayList<ArrayList<String>> gamesFound = s.getAllGames(gameName, pageCount*25);
             ArrayList<Software> software = new ArrayList<>();
-            for (ArrayList list : gamesFound) {
-                software.add(new Software(Integer.parseInt("" + list.get(0)), "" + list.get(1)));
+            for (ArrayList<String> list : gamesFound) {
+                Software e = new Software(Integer.parseInt("" + list.get(0)), "" + list.get(1));
+                try {
+                    BufferedImage bufImg = ImageIO.read(new ByteArrayInputStream(Base64.getDecoder().decode(list.get(2).getBytes())));
+                    e.setBufImg(bufImg);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                software.add(e);
             }
             displayGames(software);
         }
