@@ -384,7 +384,10 @@ public class GUI extends JFrame {
                                         byte [] arr = (dataField.getText()).getBytes(StandardCharsets.UTF_8);
                                         int userID = Integer.parseInt(userIdField.getText());
                                         Licenses lic = new Licenses(id, name, arr, userID);    
-                                        lic.insertion(database);
+                                        lic.insertion(database); 
+                                        System.out.println(id + gamePackage.getId());
+                                        String q = String.format("INSERT INTO package_license_xref (license_id, package_id) VALUES(%s, %s);", id, gamePackage.getId()); 
+                                        database.setData(q);
                                    } catch (Exception exe) {
                                        JOptionPane.showMessageDialog(centerPanel, "ERROR: Cannot perform INSERT because you have inputted faulty data, not following the appropriate datatype!");
                                    } 
@@ -404,8 +407,7 @@ public class GUI extends JFrame {
                         public void actionPerformed(ActionEvent e) {
                             generateLicenceFrameDisplay(arr, gamePackage.getId());
                         }
-                    });
-                    
+                    }); 
                     gameInfoPanel.add(licenceButton, BorderLayout.SOUTH);
                 }
                 
@@ -417,8 +419,7 @@ public class GUI extends JFrame {
             gameFrame.add(titleLabel, BorderLayout.NORTH);
             JScrollPane scrollPane = new JScrollPane(panelsPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             gameFrame.add(scrollPane, BorderLayout.CENTER);
-
-//            gameFrame.pack();
+ 
             gameFrame.setVisible(true);
             gameFrame.setLocationRelativeTo(null);
             gameFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -462,10 +463,7 @@ public class GUI extends JFrame {
                         dataHolder.add(new JLabel(Integer.toString(lic.getUser_id())));
                         licenceInfoPanel.add(dataHolder);
                     }
-                    
-                   // dataHolder.add(new JLabel(humanReadableByteCount(gamePackage.getSize())));
-                    //gameInfoPanel.add(dataHolder); 
-                    
+                      
                     licenceFrame.add(titleLabel, BorderLayout.NORTH);
                     JScrollPane scrollP = new JScrollPane(licenceInfoPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
                     licenceFrame.add(scrollP, BorderLayout.CENTER);
