@@ -18,6 +18,10 @@ import ps3preservation.data.Ps3SQLDatabase;
 import ps3presentation.business.Users;
 
 /**
+ * The login class that takes care of user;s need to login before using the
+ * application in its entirety. It takes the username and password and check the
+ * database to see if the user exists. It validates user input and notifies the
+ * user if login was successful
  *
  * @author paolo
  */
@@ -28,8 +32,10 @@ public class LoginFrame extends JFrame {
     private Users user;
 
     /**
+     * Constructor that accepts the database object that will be passed on to
+     * the business layer as a parameter
      *
-     * @param db
+     * @param db The database connection object
      */
     public LoginFrame(Ps3SQLDatabase db) {
         this.db = db;
@@ -37,7 +43,8 @@ public class LoginFrame extends JFrame {
     }
 
     /**
-     *
+     * The method that adds all the components to the login frame and places
+     * them properly
      */
     public void addComponents() {
         JLabel titleLabel = new JLabel("Pres3rve");
@@ -83,7 +90,7 @@ public class LoginFrame extends JFrame {
     }
 
     /**
-     *
+     * Method that initializes the frame and sets it size
      */
     public void initializeFrame() {
         setTitle("Login");
@@ -96,10 +103,12 @@ public class LoginFrame extends JFrame {
     }
 
     /**
+     * Method that authenticates the username and password against the business
+     * layer object
      *
-     * @param username
-     * @param password
-     * @return
+     * @param username The username that needs to be checked
+     * @param password The password that needs to be checked
+     * @return boolean value that represents if the user is authenticated
      */
     public boolean authenticate(String username, String password) {
         user = new Users(db, username, password);
@@ -108,14 +117,15 @@ public class LoginFrame extends JFrame {
     }
 
     /**
-     *
+     * Method that hides the window when it is not being used
      */
     public void disposeWindow() {
         this.setVisible(false);
     }
 
     /**
-     *
+     * Method that creates new window for user registration and hides the login
+     * one
      */
     public void registerUser() {
         disposeWindow();
@@ -123,6 +133,10 @@ public class LoginFrame extends JFrame {
 
     }
 
+    /**
+     * Inner class that is responsible of listening and reacting to when the
+     * user decides to login
+     */
     class SubmitListener implements ActionListener {
 
         JTextField usernameField;
