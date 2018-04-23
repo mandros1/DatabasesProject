@@ -59,15 +59,15 @@ public class Users {
     }
     public void generateUser(){
         ArrayList<ArrayList<String>> result = db.getData("select * from users where username = '" + username + "' and "
-                + "password = '" + password+"'");
+                + "password = PASSWORD('" + password+"')");
         firstName = result.get(0).get(3);
         lastName = result.get(0).get(4);
          email = result.get(0).get(5);       
     }
 
+
     public boolean createUser() {
-        return db.setData("insert into users(username,password,first_name,last_name,email) values('" + username + "','" + password + "'"
-                + ",'" + firstName + "','" + lastName + "','" + email + "')");
+        return db.setData("insert into users(username,password) values('" + username + "',PASSWORD('" + password + "'))");
     }
 
     public boolean checkAvailability() {
@@ -80,7 +80,7 @@ public class Users {
     }
 
     public boolean authenticate() {
-        ArrayList<ArrayList<String>> result = db.getData("select id from users where username = '" + username + "' and password = '" + password + "'");
+        ArrayList<ArrayList<String>> result = db.getData("select id from users where username = '" + username + "' and password = PASSWORD('" + password + "')");
         if (result.size() == 1) {
             this.id = Integer.parseInt(result.get(0).get(0));
             return true;
@@ -88,7 +88,6 @@ public class Users {
             return false;
         }
     }
-
     public int getId() {
         return id;
     }
