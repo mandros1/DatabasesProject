@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.TextAttribute;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -184,6 +185,8 @@ public class GUI extends JFrame {
     }
 
     public void initializeMainFrame() {
+        ImageIcon img = new ImageIcon("src/media/logo.png");
+        setIconImage(img.getImage());
         setProperFrameSize();
         initializeMenuBar();
         pack();
@@ -462,6 +465,34 @@ public class GUI extends JFrame {
             JLabel imgLabel = new JLabel();
 
             ImageIcon icon = new ImageIcon("src/media/" + img);
+            Image scaleImage = icon.getImage().getScaledInstance(100, 125, Image.SCALE_DEFAULT);
+
+            setImageToLabel(imgLabel, scaleImage);
+            imgPanel.add(imgLabel);
+
+            infoHolder.add(imgPanel, BorderLayout.WEST);
+            infoHolder.add(contentPanel, BorderLayout.CENTER);
+            add(infoHolder);
+        }
+        
+        public CenterPanel(String gameName, String gameID, BufferedImage img) {
+            super();
+
+            this.gameID = gameID;
+
+            setLayout(new GridLayout(1, 2));
+            JPanel infoHolder = new JPanel(new BorderLayout());
+            JPanel contentPanel = new JPanel();
+            contentLabel = new JLabel(String.format("<html>Game ID: %s<br><br>Game Title: %s</html>", gameID, gameName));
+            contentPanel.setLayout(new GridLayout(2, 1));
+            JPanel areaPanel = new JPanel();
+            contentPanel.add(contentLabel);
+            contentPanel.add(areaPanel);
+
+            JPanel imgPanel = new JPanel();
+            JLabel imgLabel = new JLabel();
+
+            ImageIcon icon = new ImageIcon(img);
             Image scaleImage = icon.getImage().getScaledInstance(100, 125, Image.SCALE_DEFAULT);
 
             setImageToLabel(imgLabel, scaleImage);
