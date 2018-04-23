@@ -296,6 +296,7 @@ public class GUI extends JFrame {
                 s.getPackageData();
                 packages.add(s);
             }
+            //TODO: MARIN
             JFrame gameFrame = new JFrame();
             Releases release = new Releases(software.getId(), database);
             //Packages gamePackage = new Packages(software.getId(), database);
@@ -306,6 +307,9 @@ public class GUI extends JFrame {
             panelsPanel.setMinimumSize(new Dimension(800, 800));
             panelsPanel.setSize(new Dimension(800, 800));
             panelsPanel.setMaximumSize(new Dimension(800, 800));
+            gameFrame.setMinimumSize(new Dimension(800, 800));
+            gameFrame.setSize(new Dimension(800, 800));
+            gameFrame.setMaximumSize(new Dimension(800, 800));
 
             JLabel titleLabel = new JLabel(software.getName());
             titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -372,7 +376,7 @@ public class GUI extends JFrame {
             JScrollPane scrollPane = new JScrollPane(panelsPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
             gameFrame.add(scrollPane, BorderLayout.CENTER);
 
-            gameFrame.pack();
+//            gameFrame.pack();
             gameFrame.setVisible(true);
             gameFrame.setLocationRelativeTo(null);
             gameFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
