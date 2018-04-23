@@ -280,7 +280,7 @@ public class GUI extends JFrame {
             contentArray.clear();
             int tempCount = 0;
             for (Software object : software) {
-                CenterPanel panel = new CenterPanel(object.getName(), String.valueOf(object.getId()), "placeholder.jpg");
+                CenterPanel panel = new CenterPanel(object.getName(), String.valueOf(object.getId()), object.getBufImg());
                 panel.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
                         generateAdditionalInfo(object);
