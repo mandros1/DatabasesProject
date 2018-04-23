@@ -297,6 +297,7 @@ public class GUI extends JFrame {
          * @param gameName the name of the game
          */
         public void findGames(String gameName) {
+            JFrame j = popup();
             Software s = new Software(database);
             ArrayList<ArrayList<String>> gamesFound = s.getAllGames(gameName, pageCount * 25);
             ArrayList<Software> software = new ArrayList<>();
@@ -311,6 +312,27 @@ public class GUI extends JFrame {
                 software.add(e);
             }
             displayGames(software);
+            j.dispose();
+        }
+
+        public JFrame popup() {
+            final JFrame parent = new JFrame();
+            JButton button = new JButton();
+
+            button.setText("Loading");
+            parent.add(button);
+            parent.repaint();
+            parent.pack();
+            parent.setVisible(true);
+
+            button.addActionListener(new java.awt.event.ActionListener() {
+                @Override
+                public void actionPerformed(java.awt.event.ActionEvent evt) {
+                    String name = JOptionPane.showInputDialog(parent,
+                            "Ok", null);
+                }
+            });
+            return parent;
         }
 
         /**

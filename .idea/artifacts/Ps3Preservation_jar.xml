@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Ps3Preservation:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Ps3Preservation_jar</output-path>
+    <root id="archive" name="Ps3Preservation.jar">
+      <element id="module-output" name="Ps3Preservation" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/Ps3Preservation/external/mysql-connector-java-5.1.46-bin.jar" path-in-jar="/" />
+      <element id="library" level="project" name="mysql-connector-java-5.1.46-bin" />
+    </root>
+  </artifact>
+</component>
