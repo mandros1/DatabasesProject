@@ -291,11 +291,6 @@ public class GUI extends JFrame {
                     }
                 });
                 contentArray.add(panel);
-                //FOR TESTING PURPOSES, REMOVE BEFORE SUBMITTING 
-//                if (++tempCount > 10) {
-//                    break;
-//                }
-                ///////////////////////////////////////////////
             }
 
             contentPanel.removeAll();
