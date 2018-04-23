@@ -104,8 +104,11 @@ public class GUI extends JFrame {
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println(contentPanel.getComponentCount());
+                if(contentPanel.getComponentCount() == 25){
                 pageDisplay.setText(String.format("<%d>", ++pageCount));
                 northPanel.findGames(searchField.getText()+ "%");
+                }
             }
         });
         
