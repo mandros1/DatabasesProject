@@ -35,6 +35,10 @@ public class Software extends GenericDataClass{
         ArrayList<ArrayList<String>>results = database.getData("select * from software where name like '%"+nameCondition+"%'");
         return results;
     }
+    public ArrayList getAllGames(String nameCondition, int offset){
+        ArrayList<ArrayList<String>>results = database.getData("select * from software where name like '%"+nameCondition+"%' LIMIT " + offset + ", 25");
+        return results;
+    }
     @Override
     public String[] attributeNamesGetter() {
         return COLUMN_NAMES;
