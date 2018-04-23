@@ -55,7 +55,7 @@ public class GUI extends JFrame {
         super(title);
         this.user = user;
         this.database = database;
-        
+
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
@@ -67,7 +67,7 @@ public class GUI extends JFrame {
 
         contentPanel = new JPanel();
 
-        contentPanel.setLayout(new GridLayout(0, 1));
+        contentPanel.setLayout(new GridLayout(0, 2));
 
         contentArray = new ArrayList<CenterPanel>();
 
@@ -88,9 +88,9 @@ public class GUI extends JFrame {
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(contentPanel.getComponentCount() == 25){
-                pageDisplay.setText(String.format("<%d>", ++pageCount + 1));
-                northPanel.findGames(searchField.getText()+ "%");
+                if (contentPanel.getComponentCount() == 25) {
+                    pageDisplay.setText(String.format("<%d>", ++pageCount + 1));
+                    northPanel.findGames(searchField.getText() + "%");
                 }
             }
         });
@@ -100,9 +100,9 @@ public class GUI extends JFrame {
         previousButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(!(pageCount == 0)){
-                pageDisplay.setText(String.format("<%d>", --pageCount + 1));
-                northPanel.findGames(searchField.getText() + "%");
+                if (!(pageCount == 0)) {
+                    pageDisplay.setText(String.format("<%d>", --pageCount + 1));
+                    northPanel.findGames(searchField.getText() + "%");
                 }
             }
         });
@@ -136,7 +136,7 @@ public class GUI extends JFrame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
         int height = screenSize.height * 2 / 3;
-        int width = screenSize.width * 2 / 3;
+        int width = screenSize.width * 4 / 5;
 
         setPreferredSize(new Dimension(width, height));
     }
@@ -208,7 +208,6 @@ public class GUI extends JFrame {
 
         private Users user;
 
-
         public NorthPanel(Users user) {
             super();
             this.user = user;
@@ -260,7 +259,7 @@ public class GUI extends JFrame {
 
         public void findGames(String gameName) {
             Software s = new Software(database);
-            ArrayList<ArrayList<String>> gamesFound = s.getAllGames(gameName, pageCount*25);
+            ArrayList<ArrayList<String>> gamesFound = s.getAllGames(gameName, pageCount * 25);
             ArrayList<Software> software = new ArrayList<>();
             for (ArrayList<String> list : gamesFound) {
                 Software e = new Software(Integer.parseInt("" + list.get(0)), "" + list.get(1));
@@ -327,8 +326,8 @@ public class GUI extends JFrame {
             titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
             Font font = new Font("Courier", Font.BOLD, 16);
             titleLabel.setFont(font);
-            for (Packages gamePackage :
-                    packages) {
+            for (Packages gamePackage
+                    : packages) {
                 JPanel gameInfoPanel = new JPanel(new GridLayout(0, 1));
                 JPanel nameHolder = new JPanel();
                 nameHolder.add(new JLabel("Name:"));
@@ -462,7 +461,7 @@ public class GUI extends JFrame {
 
         public CenterPanel(String gameName, String gameID, String img) {
             super();
-
+            this.setBorder(BorderFactory.createLineBorder(Color.black));
             this.gameID = gameID;
 
             setLayout(new GridLayout(1, 2));
@@ -504,9 +503,15 @@ public class GUI extends JFrame {
 
             JPanel imgPanel = new JPanel();
             JLabel imgLabel = new JLabel();
+            ImageIcon icon = null;
 
-            ImageIcon icon = new ImageIcon(img);
-            Image scaleImage = icon.getImage().getScaledInstance(100, 125, Image.SCALE_DEFAULT);
+            if (img == null) {
+                icon = new ImageIcon("src/media/placeholder.jpg");
+            } else {
+                icon = new ImageIcon(img);
+            }
+
+            Image scaleImage = icon.getImage().getScaledInstance(200, 250, Image.SCALE_DEFAULT);
 
             setImageToLabel(imgLabel, scaleImage);
             imgPanel.add(imgLabel);
@@ -537,17 +542,21 @@ public class GUI extends JFrame {
 
     public static String humanReadableByteCount(long bytes) {
         int unit = 1024;
-        if (bytes < unit) return bytes + " B";
+        if (bytes < unit) {
+            return bytes + " B";
+        }
         int exp = (int) (Math.log(bytes) / Math.log(unit));
         String pre = ("KMGTPE").charAt(exp - 1) + ("i");
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
+
     public static byte[] getBytesFromInputStream(InputStream is) throws IOException {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
 
         byte[] buffer = new byte[0xFFFF];
-        for(int len=is.read(buffer);len!=-1;len=is.read(buffer))
+        for (int len = is.read(buffer); len != -1; len = is.read(buffer)) {
             os.write(buffer, 0, len);
+        }
 
         return os.toByteArray();
     }
