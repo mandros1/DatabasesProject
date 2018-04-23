@@ -48,14 +48,26 @@ public class Users {
         this.email = email;
     }
 
-    public Users(int id, String username, String password) {
-        this.id = id;
+    public Users(Ps3SQLDatabase db, String username, String password,String firstName,
+            String lastname, String email) {
+        this.db = db;
         this.username = username;
         this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastname;
+        this.email = email;
+    }
+    public void generateUser(){
+        ArrayList<ArrayList<String>> result = db.getData("select * from users where username = '" + username + "' and "
+                + "password = '" + password+"'");
+        firstName = result.get(0).get(3);
+        lastName = result.get(0).get(4);
+         email = result.get(0).get(5);       
     }
 
     public boolean createUser() {
-        return db.setData("insert into users(username,password) values('" + username + "','" + password + "')");
+        return db.setData("insert into users(username,password,first_name,last_name,email) values('" + username + "','" + password + "'"
+                + ",'" + firstName + "','" + lastName + "','" + email + "')");
     }
 
     public boolean checkAvailability() {

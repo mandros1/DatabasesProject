@@ -129,7 +129,9 @@ public class LoginFrame extends JFrame {
                             @Override
                             public void run() {
                                 disposeWindow();
-                                new GUI("PS3 Preservation Project User: " + username, user, db);
+                                Users fullUser = new Users(db,username, password);
+                                fullUser.generateUser();
+                                new GUI("PS3 Preservation Project User: " + username, fullUser, db);
                             }
 
                         }, 1000);

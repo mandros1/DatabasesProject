@@ -177,7 +177,8 @@ public class GUI extends JFrame {
     public static void main(String[] args) {
         Ps3SQLDatabase db = new Ps3SQLDatabase("jdbc", "mysql", "hypercubed.co", "3306", "ps3_preservation?useSSL=false", "ps3_preservation", "M2ZUdOq765uSHhbr");
         db.connect();
-        new GUI("PS3 Preservation Project", new Users(1, "test1", "test2"), db);
+        new GUI("PS3 Preservation Project", new Users(db, "username", "password", "fistname",
+                "lastname","email"), db);
     }
 
     class NorthPanel extends JPanel {
@@ -205,16 +206,6 @@ public class GUI extends JFrame {
             searchLabel.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
                     findGames(searchField.getText());
-//                    for (CenterPanel item : contentArray) {
-//                        if (searchField.getText().equalsIgnoreCase(item.getContentLabel().getText())) {
-//                            JFrame frame = new JFrame();
-//                            frame.add(item);
-//                            frame.pack();
-//                            frame.setSize(450, 300);
-//                            frame.setLocationRelativeTo(null);
-//                            frame.setVisible(true);
-//                        }
-//                    }
                 }
             });
 
@@ -250,11 +241,9 @@ public class GUI extends JFrame {
         }
 
         public void displayGames(ArrayList<Software> software) {
-//            JOptionPane.showMessageDialog(null, String.format("\nFound %d games", software.size()));
             contentArray.clear();
             int tempCount = 0;
             for (Software object : software) {
-                System.out.println(object.getName());
                 CenterPanel panel = new CenterPanel(object.getName(), String.valueOf(object.getId()) + "TTT" + tempCount, "placeholder.jpg");
                 panel.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
@@ -271,11 +260,6 @@ public class GUI extends JFrame {
 
             for (int i = 0; i < contentArray.size(); i++) {
                 contentPanel.add(contentArray.get(i));
-//                contentArray.get(i).addMouseListener(new MouseAdapter() {
-//                    public void mouseClicked(MouseEvent e) {
-//                        System.out.println("MEMES");
-//                    }
-//                });
             }
             contentPanel.revalidate();
             contentPanel.repaint();
@@ -422,32 +406,26 @@ public class GUI extends JFrame {
             this.gameID = gameID;
 
             setLayout(new GridLayout(1, 2));
-
+            JPanel infoHolder = new JPanel(new BorderLayout());
             JPanel contentPanel = new JPanel();
             contentLabel = new JLabel(gameID + ": " + gameName);
             contentPanel.setLayout(new GridLayout(2, 1));
             JPanel areaPanel = new JPanel();
-//            JTextArea contentArea = new JTextArea(20, 20);
-//            contentArea.setLineWrap(true);
-//            contentArea.setWrapStyleWord(true);
-//            contentArea.setEditable(false);
-//            contentArea.setText("TEST");
-
             contentPanel.add(contentLabel);
-//            areaPanel.add(contentArea);
             contentPanel.add(areaPanel);
 
             JPanel imgPanel = new JPanel();
             JLabel imgLabel = new JLabel();
 
             ImageIcon icon = new ImageIcon("src/media/" + img);
-            Image scaleImage = icon.getImage().getScaledInstance(158, 188, Image.SCALE_DEFAULT);
+            Image scaleImage = icon.getImage().getScaledInstance(100, 125, Image.SCALE_DEFAULT);
 
             setImageToLabel(imgLabel, scaleImage);
             imgPanel.add(imgLabel);
 
-            add(imgPanel);
-            add(contentPanel);
+            infoHolder.add(imgPanel,BorderLayout.WEST);
+            infoHolder.add(contentPanel,BorderLayout.CENTER);
+            add(infoHolder);
         }
 
         public JLabel getContentLabel() {

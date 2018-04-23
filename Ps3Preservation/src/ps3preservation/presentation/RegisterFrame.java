@@ -83,10 +83,11 @@ public class RegisterFrame extends JFrame {
                 if (username.length() < 1 || password.length() < 1 || firstName.length() < 1
                         || lastname.length() < 1 || email.length() < 1) {
                     feedbackLabel.setText("All fields required");
-                } else if (matcher.find()) {
+                } else if (!matcher.find()) {
                     feedbackLabel.setText("Input email properly");
                 } else {
-                    Users user = new Users(db, username, password);
+                    Users user = new Users(db, username, password, firstName,
+                            lastname, email);
                     if (user.checkAvailability()) {
                         if (user.createUser()) {
                             feedbackLabel.setForeground(Color.black);

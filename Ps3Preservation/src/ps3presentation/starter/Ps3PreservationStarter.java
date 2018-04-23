@@ -1,5 +1,6 @@
 package ps3presentation.starter;
 
+import java.util.ArrayList;
 import ps3preservation.data.Ps3SQLDatabase;
 import ps3preservation.presentation.LoginFrame;
 
@@ -32,6 +33,11 @@ public class Ps3PreservationStarter {
         } else {
             System.err.println("Connection not succefull");
         }
+//        ArrayList<ArrayList<String>> users = db.getData("select * from users");
+//        System.out.println(db.getTableInformation("users"));
+//        db.setData("delete from users where username = 'a'");
+//        ArrayList<ArrayList<String>> users = db.getData("select * from users where username = ");
+//        System.out.println(db.getTableInformation("users"));
         new LoginFrame(db);
     }
 }
