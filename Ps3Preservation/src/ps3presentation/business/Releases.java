@@ -6,6 +6,7 @@
 package ps3presentation.business;
 
 import java.util.ArrayList;
+import ps3preservation.data.Ps3SQLDatabase;
 
 /**
  * @author Marin
@@ -20,6 +21,7 @@ public class Releases extends GenericDataClass {
     private String rights;
     private String region;
     private String type;
+    private Ps3SQLDatabase database;
 
     public Releases(String real_id, int software_id, String stat) {
         this.real_id = real_id;
@@ -30,6 +32,28 @@ public class Releases extends GenericDataClass {
             this.status = Status.valueOf("UNKNOWN");
         }
         super.populateAttributeList();
+    }
+
+    public Releases(int id, Ps3SQLDatabase database) {
+        System.out.println(id);
+        this.software_id = id;
+        this.database = database;
+    }
+
+    public boolean getReleaseData() {
+        boolean returned = false;
+        ArrayList<ArrayList<String>> results = database.getData("select * from releases where software_id = "+ software_id);
+        if (results.size() > 0) {
+            returned = true;
+            real_id = results.get(0).get(1);
+            if (results.get(0).get(1).equalsIgnoreCase("ALIVE")) {
+                this.status = Status.valueOf(results.get(0).get(1).toUpperCase());
+            } else {
+                this.status = Status.valueOf("UNKNOWN");
+            }
+        }
+
+        return returned;
     }
 
     public void calculateMetadata() {

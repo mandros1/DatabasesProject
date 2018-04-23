@@ -7,7 +7,10 @@ package ps3preservation.presentation;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -17,8 +20,14 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.font.TextAttribute;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
-import static java.util.Objects.hash;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -28,8 +37,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import ps3presentation.business.Files;
 import ps3presentation.business.Licenses;
 import ps3presentation.business.PackageFileXref;
@@ -53,11 +62,13 @@ public class GUI extends JFrame {
     private JPanel contentPanel;
     private JPanel centerPanel;
     private JScrollPane scrollableContent;
+    
 
     public GUI(String title, Users user, Ps3SQLDatabase database) {
         super(title);
         this.user = user;
         this.database = database;
+        
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
 
@@ -113,8 +124,20 @@ public class GUI extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         setJMenuBar(menuBar);
 
-        JMenu mnFile = new JMenu("File");
+        JMenu mnFile = new JMenu("Menu");
         menuBar.add(mnFile);
+
+        JMenuItem mntmHelp = new JMenuItem("Help");
+        mntmHelp.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String mssg = String.format("Upon opening, this program provides the user with a list of video games.\n"
+                        + "One can browser by simply scrolling through all games or\n"
+                        + "use the search bar on the top left by typing and pressing enter\n"
+                        + "or clicking on the search logo.\nClick the game name or picture for more details.");
+                JOptionPane.showMessageDialog(getParent(), mssg, "Help", JOptionPane.PLAIN_MESSAGE);
+            }
+        });
 
         JMenuItem mntmExit = new JMenuItem("Exit");
         mntmExit.addActionListener(new ActionListener() {
@@ -123,14 +146,20 @@ public class GUI extends JFrame {
                 System.exit(0);
             }
         });
+
+        mnFile.add(mntmHelp);
         mnFile.add(mntmExit);
+
         JMenuItem mntmAbout = new JMenuItem("About");
         JMenu mnAbout = new JMenu("About");
         mnAbout.add(mntmAbout);
         mntmAbout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                String mssg = String.format("The PlayStation 3 Preservation Project is a non-profit initiative with the intent of preserving\n"
+                        + " game data from the now last generation console. This project was made possible by the\nhard work and initiative of"
+                        + "the PS3 community. \nThe team:\nRoberto Anic Banic, Paolo Stojic\nMatea Cvijanovic, Donat Avdijaj and Marin Andros.");
+                JOptionPane.showMessageDialog(getParent(), mssg, "About PS3PP", JOptionPane.PLAIN_MESSAGE);
             }
         });
         menuBar.add(mnAbout);
@@ -229,7 +258,7 @@ public class GUI extends JFrame {
                 CenterPanel panel = new CenterPanel(object.getName(), String.valueOf(object.getId()) + "TTT" + tempCount, "placeholder.jpg");
                 panel.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
-                        System.out.println(panel.getGameID());
+                        generateAdditionalInfo(object);
                     }
                 });
                 contentArray.add(panel);
@@ -250,6 +279,76 @@ public class GUI extends JFrame {
             }
             contentPanel.revalidate();
             contentPanel.repaint();
+        }
+
+        public void generateAdditionalInfo(Software software) {
+            JFrame gameFrame = new JFrame();
+            Releases release = new Releases(software.getId(), database);
+            Packages gamePackage = new Packages(software.getId(), database);
+            release.getReleaseData();
+            gamePackage.getPackageData();
+            System.out.println(gamePackage.getType());
+
+            JLabel titleLabel = new JLabel(software.getName());
+            titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            Font font = new Font("Courier", Font.BOLD, 16);
+            titleLabel.setFont(font);
+            JPanel gameInfoPanel = new JPanel(new GridLayout(0, 1));
+            JPanel dataHolder = new JPanel();
+            dataHolder.add(new JLabel("Release Status:"));
+            dataHolder.add(new JLabel(release.getStatus()));
+            gameInfoPanel.add(dataHolder);
+            JPanel dataHolder1 = new JPanel();
+            dataHolder1.add(new JLabel("Type:"));
+            dataHolder1.add(new JLabel("" + gamePackage.getType()));
+            gameInfoPanel.add(dataHolder1);
+            JPanel dataHolder2 = new JPanel();
+            dataHolder2.add(new JLabel("Package Type:"));
+            dataHolder2.add(new JLabel("" + gamePackage.getPackage_type()));
+            gameInfoPanel.add(dataHolder2);
+            JPanel dataHolder3 = new JPanel();
+            dataHolder3.add(new JLabel("Package Size:"));
+            dataHolder3.add(new JLabel("" + gamePackage.getSize()));
+            gameInfoPanel.add(dataHolder3);
+            JPanel dataHolder4 = new JPanel();
+            dataHolder4.add(new JLabel("Sys Version:"));
+            dataHolder4.add(new JLabel("" + gamePackage.getSys_version()));
+            gameInfoPanel.add(dataHolder4);
+            JPanel dataHolder5 = new JPanel();
+            dataHolder5.add(new JLabel("Source URL:"));
+            JLabel urlLabel = new JLabel("Download link");
+            Font fontLink = urlLabel.getFont();
+            Map attributes = fontLink.getAttributes();
+            attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+            urlLabel.setFont(fontLink);
+            urlLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            urlLabel.setForeground(Color.BLUE);
+            urlLabel.addMouseListener(new MouseAdapter() {
+                public void mouseClicked(MouseEvent e) {
+                    Desktop desktop = java.awt.Desktop.getDesktop();
+                    URI oURL;
+                    try {
+                        oURL = new URI(gamePackage.getSource_url());
+                        desktop.browse(oURL);
+                    } catch (URISyntaxException ex) {
+                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+            });
+            dataHolder5.add(urlLabel);
+            gameInfoPanel.add(dataHolder5);
+            gameInfoPanel.setSize(new Dimension(200, 200));
+            gameFrame.add(titleLabel, BorderLayout.NORTH);
+            gameFrame.add(gameInfoPanel, BorderLayout.CENTER);
+
+            gameFrame.pack();
+            gameFrame.setVisible(true);
+            gameFrame.setLocationRelativeTo(null);
+            gameFrame.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
         }
 
         public JPanel createTitlePanel() {

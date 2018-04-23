@@ -3,6 +3,7 @@ package ps3preservation.presentation;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import ps3preservation.data.Ps3SQLDatabase;
 import ps3presentation.business.Users;
 
@@ -31,6 +33,13 @@ public class LoginFrame extends JFrame {
     }
 
     public void addComponents() {
+        JLabel titleLabel = new JLabel("Pres3rve");
+        JLabel subtitleLabel = new JLabel("Please login or create an account");
+        titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        subtitleLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        Font font = new Font("Courier", Font.BOLD,20);
+        titleLabel.setFont(font);
+        JPanel northPanel = new JPanel(new BorderLayout());
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridLayout(0, 2));
         JTextField usernameField = new JTextField(10);
@@ -58,8 +67,10 @@ public class LoginFrame extends JFrame {
         feedbackLabel = new JLabel(" ");
         feedbackPanel.add(feedbackLabel);
         feedbackLabel.setHorizontalAlignment(JLabel.CENTER);
-
-        add(inputPanel, BorderLayout.NORTH);
+        northPanel.add(titleLabel,BorderLayout.NORTH);
+        northPanel.add(subtitleLabel,BorderLayout.CENTER);
+        northPanel.add(inputPanel,BorderLayout.SOUTH);
+        add(northPanel, BorderLayout.NORTH);
         add(submitPanel, BorderLayout.CENTER);
         add(feedbackPanel, BorderLayout.SOUTH);
     }

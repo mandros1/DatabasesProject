@@ -7,6 +7,7 @@ package ps3presentation.business;
 
 import ps3presentation.business.GenericDataClass;
 import java.util.ArrayList;
+import ps3preservation.data.Ps3SQLDatabase;
 
 /**
  *
@@ -27,9 +28,10 @@ public class Packages extends GenericDataClass {
     private byte[] hash; //not null
     private int license_id; //DEFAULT -> NULL
     private byte verified; //not null
-    private static final String[] COLUMN_NAMES={"filename", "hash", "id", "license_id", "name", "type", "package_type", "size", "source_url", "sys_version", "package_channel", "verified", "version"};
+    private static final String[] COLUMN_NAMES = {"filename", "hash", "id", "license_id", "name", "type", "package_type", "size", "source_url", "sys_version", "package_channel", "verified", "version"};
+    private Ps3SQLDatabase database;
 
-    public Packages(int id, String name, String filename, String source_url, String package_type, String type, String package_channel, double sys_version, double version,  int size, byte[] hash, int license_id, byte verified) {
+    public Packages(int id, String name, String filename, String source_url, String package_type, String type, String package_channel, double sys_version, double version, int size, byte[] hash, int license_id, byte verified) {
         this.id = id;
         this.name = name;
         this.filename = filename;
@@ -46,6 +48,36 @@ public class Packages extends GenericDataClass {
         super.populateAttributeList();
     }
 
+    public Packages(int id, Ps3SQLDatabase database) {
+        this.id = id;
+        this.database = database;
+    }
+
+    public boolean getPackageData() {
+        boolean returned = false;
+        ArrayList<ArrayList<String>> results = database.getData("select * from "
+                + "packages where id = " + id);
+        if (results.size() > 0) {
+            returned = true;
+            this.name = results.get(0).get(1);
+            this.filename = results.get(0).get(2);
+            this.source_url = results.get(0).get(3);
+            enumHandler(results.get(0).get(4));
+            enumHandler(results.get(0).get(5));
+            enumHandler(results.get(0).get(6));
+            this.version = Double.parseDouble(results.get(0).get(7));
+            this.sys_version = Double.parseDouble(results.get(0).get(8));
+            this.size = Integer.parseInt(results.get(0).get(9));
+            //this.hash = Integer.parseInt(results.get(0).get(10));
+            if (results.get(0).get(11) != null) {
+                this.license_id = Integer.parseInt(results.get(0).get(11));
+            }
+            //this.verified = Integer.parseInt(results.get(0).get(12));
+
+        }
+        return returned;
+    }
+
     enum Type {
         UPDATE, SOUNDTRACK, EDAT, THEME, DEMO, DLC, VIDEO, WALLPAPER, MANUAL, AVATAR, CORE
     };
@@ -58,7 +90,7 @@ public class Packages extends GenericDataClass {
         RETAIL, DEBUG
     };
 
-    public void enumHandler(String enumValue) { 
+    public void enumHandler(String enumValue) {
         for (Type element : Type.values()) {
             if (element.name().equals(enumValue)) {
                 this.type = Type.valueOf(enumValue);
@@ -186,7 +218,7 @@ public class Packages extends GenericDataClass {
         enumHandler(type.name());
     }
 
-    public void setPackage_channel(PackageChannel package_channel) { 
+    public void setPackage_channel(PackageChannel package_channel) {
         enumHandler(package_channel.name());
     }
 
@@ -214,5 +246,4 @@ public class Packages extends GenericDataClass {
         this.verified = verified;
     }
 
-    
 }
