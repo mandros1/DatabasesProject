@@ -215,7 +215,7 @@ public class GUI extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    
+
     public static void main(String[] args) {
         Ps3SQLDatabase db = new Ps3SQLDatabase("jdbc", "mysql", "hypercubed.co", "3306", "ps3_preservation?useSSL=false", "ps3_preservation", "M2ZUdOq765uSHhbr");
         db.connect();
@@ -246,15 +246,15 @@ public class GUI extends JFrame {
 
         /**
          * Creating the images
-         * @param label 
-         * @param PicURL 
+         * @param label
+         * @param PicURL
          */
         public void setImageToLabel(JLabel label, String PicURL) {
             ImageIcon imgThisImg;
             imgThisImg = new ImageIcon(PicURL);
             label.setIcon(imgThisImg);
         }
-        
+
         /**
          * Make the panel with the search bar
          * @return search panel
@@ -297,7 +297,17 @@ public class GUI extends JFrame {
          * @param gameName the name of the game
          */
         public void findGames(String gameName) {
-            JFrame j = popup();
+            JFrame ff = new JFrame();
+            JLabel lab = new JLabel("GAMES ARE LOADING...");
+            JButton but = new JButton("Stress button");
+            but.setPreferredSize(new Dimension(100, 100));
+            lab.setPreferredSize(new Dimension(100, 100));
+            ff.add(but, BorderLayout.SOUTH);
+            ff.setSize(new Dimension(200, 200));
+            ff.add(lab, BorderLayout.NORTH);
+            ff.setVisible(true);
+            ff.setLocationRelativeTo(null);
+
             Software s = new Software(database);
             ArrayList<ArrayList<String>> gamesFound = s.getAllGames(gameName, pageCount * 25);
             ArrayList<Software> software = new ArrayList<>();
@@ -312,7 +322,7 @@ public class GUI extends JFrame {
                 software.add(e);
             }
             displayGames(software);
-            j.dispose();
+            ff.dispose();
         }
 
         public JFrame popup() {
@@ -597,7 +607,7 @@ public class GUI extends JFrame {
 
         /**
          * Creates the panel that holds the user
-         * @return 
+         * @return
          */
         public JPanel createUserPanel() {
             JLabel userLabel = new JLabel(user.getUsername());
@@ -616,19 +626,19 @@ public class GUI extends JFrame {
 
             return userPanel;
         }
-        
+
         /**
-         * Class that displays user related info 
+         * Class that displays user related info
          */
         class UserFrame extends JFrame {
 
             /**
-         * Class that displays user related info 
+         * Class that displays user related info
          */
             public UserFrame() {
                 initializeFrame();
             }
-            
+
             /**
              * Adds the details to the frame
              */
@@ -669,12 +679,39 @@ public class GUI extends JFrame {
         final String gameID;
 
         /**
-         * Panel that holds a given game 
+         * Panel that holds a given game
          * @param gameName game name
          * @param gameID game id
          * @param img game picture
          */
-       
+        public CenterPanel(String gameName, String gameID, String img) {
+            super();
+            this.setBorder(BorderFactory.createLineBorder(Color.black));
+            this.gameID = gameID;
+
+            setLayout(new GridLayout(1, 2));
+            JPanel infoHolder = new JPanel(new BorderLayout());
+            JPanel contentPanel = new JPanel();
+            contentLabel = new JLabel(String.format("<html>Game ID: %s<br><br>Game Title: %s</html>", gameID, gameName));
+            contentPanel.setLayout(new GridLayout(2, 1));
+            JPanel areaPanel = new JPanel();
+            contentPanel.add(contentLabel);
+            contentPanel.add(areaPanel);
+
+            JPanel imgPanel = new JPanel();
+            JLabel imgLabel = new JLabel();
+
+            ImageIcon icon = new ImageIcon("src/media/" + img);
+            Image scaleImage = icon.getImage().getScaledInstance(100, 125, Image.SCALE_DEFAULT);
+
+            setImageToLabel(imgLabel, scaleImage);
+            imgPanel.add(imgLabel);
+
+            infoHolder.add(imgPanel, BorderLayout.WEST);
+            infoHolder.add(contentPanel, BorderLayout.CENTER);
+            add(infoHolder);
+        }
+
         public CenterPanel(String gameName, String gameID, BufferedImage img) {
             super();
 
@@ -731,7 +768,7 @@ public class GUI extends JFrame {
         public void setContentLabel(JLabel contentLabel) {
             this.contentLabel = contentLabel;
         }
-        
+
         /**
          * Set the image
          */
@@ -744,7 +781,7 @@ public class GUI extends JFrame {
 
     /**
      * Turns bytes into a humanly readable count
-     * @param bytes 
+     * @param bytes
      * @return count of bites in a human friendly way
      */
     public static String humanReadableByteCount(long bytes) {
